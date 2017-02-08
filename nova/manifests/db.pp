@@ -39,6 +39,7 @@ class nova::db (
 ) {
 
   $database_connection_real = pick($database_connection, $::nova::database_connection, false)
+  $database_connection_real_api = hiera('nova_api::database_connection')
   $slave_connection_real = pick($slave_connection, $::nova::slave_connection, false)
   $database_idle_timeout_real = pick($database_idle_timeout, $::nova::database_idle_timeout, false)
 
@@ -54,8 +55,9 @@ class nova::db (
       fail("Invalid db connection ${database_connection_real}")
     }
     nova_config {
-      'database/connection':   value => $database_connection_real, secret => true;
-      'database/idle_timeout': value => $database_idle_timeout_real;
+      'database/connection':       value => $database_connection_real, secret => true;
+      'api_database/connection':   value => $database_connection_real_api, secret => true;
+      'database/idle_timeout':     value => $database_idle_timeout_real;
     }
     if $slave_connection_real {
       nova_config {

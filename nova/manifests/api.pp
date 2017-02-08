@@ -158,7 +158,7 @@ class nova::api(
   $admin_user            = 'nova',
   $api_bind_address      = '0.0.0.0',
   $metadata_listen       = '0.0.0.0',
-  $enabled_apis          = 'ec2,osapi_compute,metadata',
+  $enabled_apis          = 'osapi_compute,metadata',
   $keystone_ec2_url      = false,
   $volume_api_class      = 'nova.volume.cinder.API',
   $use_forwarded_for     = false,
@@ -213,6 +213,7 @@ class nova::api(
 
   nova_config {
     'DEFAULT/enabled_apis':          value => $enabled_apis;
+    'DEFAULT/use_neutron':           value => true;
     'DEFAULT/volume_api_class':      value => $volume_api_class;
     'DEFAULT/ec2_listen':            value => $api_bind_address;
     'DEFAULT/osapi_compute_listen':  value => $api_bind_address;
@@ -243,7 +244,8 @@ class nova::api(
   } else {
     $auth_uri_real = "${auth_protocol}://${auth_host}:5000/"
   }
-  nova_config { 'keystone_authtoken/auth_uri': value => $auth_uri_real; }
+#  nova_config { 'keystone_authtoken/auth_uri': value => $auth_uri_real; }
+#  nova_config { 'keystone_authtoken/auth_uri': ensure => absent; }
 
   if $identity_uri {
     nova_config { 'keystone_authtoken/identity_uri': value => $identity_uri; }
@@ -301,9 +303,14 @@ class nova::api(
   }
 
   nova_config {
-    'keystone_authtoken/admin_tenant_name': value => $admin_tenant_name;
-    'keystone_authtoken/admin_user':        value => $admin_user;
-    'keystone_authtoken/admin_password':    value => $admin_password, secret => true;
+    'keystone_authtoken/admin_tenant_name': value  => $admin_tenant_name;
+    'keystone_authtoken/admin_user':        value  => $admin_user;
+#   'keystone_authtoken/auth_url':          value  => hiera('quickstack::params::auth_url');
+    'keystone_authtoken/auth_url':          ensure => absent;
+    'keystone_authtoken/auth_uri':          value  => hiera('quickstack::params::auth_uri');
+    'keystone_authtoken/admin_password':    value  => $admin_password, secret => true;
+#   'keystone_authtoken/auth_type':         value  => 'password';
+    'keystone_authtoken/auth_type':         ensure => absent;
   }
 
   if $keystone_ec2_url {
@@ -350,7 +357,7 @@ class nova::api(
     Package<| title == $::nova::params::common_package_name |> ~> Exec['nova-db-sync']
 
     exec { 'nova-db-sync':
-      command     => '/usr/bin/nova-manage db sync',
+      command     => '/usr/bin/nova-manage db sync; /usr/bin/nova-manage api_db sync',
       refreshonly => true,
       subscribe   => Exec['post-nova_config'],
     }

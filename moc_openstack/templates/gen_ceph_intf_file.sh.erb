@@ -2,17 +2,15 @@
 
 FILE="/etc/sysconfig/network-scripts/ifcfg-<%= ceph_iface %>.<%= ceph_vlan %>"
 
-HOST=$(hostname | cut -d- -f2 | cut -d. -f1)
-HOST_IP="192.168.28.$HOST"
+#HOST=$(hostname | cut -d- -f2 | cut -d. -f1 | sed -e 's/^[0]*//')
+HOST=$((hostname -s | cut -d- -f3|grep . || hostname -s | cut -d- -f2|grep .) | sed -e 's/^[0]*//')
+HOST_IP="<%= ceph_net %>.$HOST"
 
 rm -rf $FILE
 touch $FILE
-echo "DEVICE=\"<%= ceph_iface  %>.<%= ceph_vlan %>\"" >> $FILE
+echo "DEVICE=\"<%= ceph_iface %>.<%= ceph_vlan %>\"" >> $FILE
 echo "ONBOOT=yes" >> $FILE
 echo "BOOTPROTO=static" >> $FILE
 echo "VLAN=yes" >> $FILE
 echo "IPADDR=$HOST_IP" >> $FILE
-echo "NETMASK=255.255.255.0" >> $FILE
-echo "GATEWAY=192.168.28.1" >> $FILE
-echo "NOZEROCONF=yes" >> $FILE
-echo "DEFROUTE=no" >> $FILE
+echo "NETMASK=<%= ceph_netmask %>" >> $FILE

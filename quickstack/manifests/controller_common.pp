@@ -200,6 +200,22 @@ class quickstack::controller_common (
   $allow_resize_to_same_host     = $quickstack::params::allow_resize,
   $allow_migrate_to_same_host    = $quickstack::params::allow_migrate,
   $repo_server                   = $quickstack::params::repo_server,
+  $lenovo_pub_iface              = $quickstack::params::lenovo_pub_iface,
+  $lenovo_priv_iface             = $quickstack::params::lenovo_priv_iface,
+  $lenovo_ceph_iface             = $quickstack::params::lenovo_ceph_iface,
+  $quanta_pub_iface              = $quickstack::params::quanta_pub_iface,
+  $quanta_priv_iface             = $quickstack::params::quanta_priv_iface,
+  $quanta_ceph_iface             = $quickstack::params::quanta_ceph_iface,
+  $default_pub_iface             = $quickstack::params::default_pub_iface,
+  $default_priv_iface            = $quickstack::params::default_priv_iface,
+  $default_ceph_iface            = $quickstack::params::default_ceph_iface,
+  $pub_vlan                      = $quickstack::params::pub_vlan,
+  $pub_netmask                   = $quickstack::params::pub_netmask,
+  $priv_netmask                  = $quickstack::params::priv_netmask,
+  $pub_net                       = $quickstack::params::pub_net,
+  $priv_net                      = $quickstack::params::priv_net,
+  $ceph_net                      = $quickstack::params::ceph_net,
+  $ceph_netmask                  = $quickstack::params::ceph_netmask,
   $elasticsearch_host            = $quickstack::params::elasticsearch_host,
   $enable_ceilometer             = $quickstack::params::enable_ceilometer,
   $sahara_db_password            = $quickstack::params::sahara_db_password,
@@ -209,6 +225,21 @@ class quickstack::controller_common (
     $auth_protocol = 'https'
   } else {
     $auth_protocol = 'http'
+  }
+  if $::productname == 'QSSC-S99' {
+    $pub_iface  = $quanta_pub_iface
+    $priv_iface = $quanta_priv_iface
+    $ceph_iface = $quanta_ceph_iface
+  }
+  elsif 'System x3550 M5' in $::productname {
+    $pub_iface  = $lenovo_pub_iface
+    $priv_iface = $lenovo_priv_iface
+    $ceph_iface = $lenovo_ceph_iface
+  }
+  else {
+    $pub_iface  = $default_pub_iface
+    $priv_iface = $default_priv_iface
+    $ceph_iface = $default_ceph_iface
   }
 
   class {'quickstack::openstack_common': }
@@ -300,8 +331,6 @@ class quickstack::controller_common (
       $amqp_port = '5672'
       $nova_sql_connection = "mysql://nova:${nova_db_password}@${mysql_host}/nova"
   }
-
-  class {'hosts':}
 
   class {'quickstack::db::mysql':
     mysql_root_password  => $mysql_root_password,
@@ -703,7 +732,7 @@ class quickstack::controller_common (
 
   file {'/etc/httpd/conf.d/rootredirect.conf':
     ensure  => present,
-    content => 'RedirectMatch ^/$ /dashboard/',
+    content => 'RedirectMatch ^[a-zA-Z]/$ /dashboard/',
     notify  => File['/etc/httpd/conf.d/openstack-dashboard.conf'],
   }
 
@@ -799,6 +828,8 @@ class quickstack::controller_common (
     ceph_iface     => $ceph_iface,
     ceph_key       => $ceph_key, 
     ceph_vlan      => $ceph_vlan,
+    ceph_net       => $ceph_net,
+    ceph_netmask   => $ceph_netmask,
 }
 
 # Ensure ruby has lastest version
@@ -826,45 +857,46 @@ class quickstack::controller_common (
   package { "yum-utils":
     ensure => latest,
   }
+#This belongs to a separate manifest and only needs to be declared here
 #Customization for isntalling sensu
-  class { '::sensu':
-    client                => $sensu_client_enable,            
-    sensu_plugin_name     => 'sensu-plugin',
-    sensu_plugin_version  => 'installed',
-    sensu_plugin_provider => 'gem',
-    purge_config          => true,
-    rabbitmq_host         => $sensu_rabbitmq_host,
-    rabbitmq_user         => $sensu_rabbitmq_user,
-    rabbitmq_password     => $sensu_rabbitmq_password,
-    rabbitmq_vhost        => '/sensu',
-    subscriptions         => $sensu_client_subscriptions,
-    redact                => $redact,
-    client_custom         => $client_custom,
-    client_keepalive      => $sensu_client_keepalive,
-    plugins               => [
-       "puppet:///modules/sensu/plugins/check-mem.sh",
-       "puppet:///modules/sensu/plugins/cpu-metrics.rb",
-       "puppet:///modules/sensu/plugins/disk-usage-metrics.rb",
-       "puppet:///modules/sensu/plugins/load-metrics.rb",
-       "puppet:///modules/sensu/plugins/ceph-osd-metrics.rb",
-       "puppet:///modules/sensu/plugins/check-ceph.rb",
-       "puppet:///modules/sensu/plugins/check-disk-fail.rb",
-       "puppet:///modules/sensu/plugins/memory-metrics.rb",
-       "puppet:///modules/sensu/plugins/uptime-metrics.py",
-       "puppet:///modules/sensu/plugins/check_keystone-api.sh",
-       "puppet:///modules/sensu/plugins/check_neutron-api.py",
-       "puppet:///modules/sensu/plugins/keystone-token-metrics.rb",
-       "puppet:///modules/sensu/plugins/neutron-agent-status.py",
-       "puppet:///modules/sensu/plugins/nova-hypervisor-metrics.py",
-       "puppet:///modules/sensu/plugins/nova-server-state-metrics.py",
-       "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb",
-       "puppet:///modules/sensu/plugins/disk-metrics.rb",
-       "puppet:///modules/sensu/plugins/vmstat-metrics.rb",
-       "puppet:///modules/sensu/plugins/iostat-metrics.rb"
-
-    ]
-  }
-
+if hiera('moc::usesensu') == 'true' {
+    class { '::sensu':
+      client                => $sensu_client_enable,
+      sensu_plugin_name     => 'sensu-plugin',
+      sensu_plugin_version  => 'installed',
+      sensu_plugin_provider => 'gem',
+      purge_config          => true,
+      rabbitmq_host         => $sensu_rabbitmq_host,
+      rabbitmq_user         => $sensu_rabbitmq_user,
+      rabbitmq_password     => $sensu_rabbitmq_password,
+      rabbitmq_vhost        => '/sensu',
+      subscriptions         => $sensu_client_subscriptions,
+      redact                => $redact,
+      client_custom         => $client_custom,
+      client_keepalive      => $sensu_client_keepalive,
+      plugins               => [
+         "puppet:///modules/sensu/plugins/check-mem.sh",
+         "puppet:///modules/sensu/plugins/cpu-metrics.rb",
+         "puppet:///modules/sensu/plugins/disk-usage-metrics.rb",
+         "puppet:///modules/sensu/plugins/load-metrics.rb",
+         "puppet:///modules/sensu/plugins/ceph-osd-metrics.rb",
+         "puppet:///modules/sensu/plugins/check-ceph.rb",
+         "puppet:///modules/sensu/plugins/check-disk-fail.rb",
+         "puppet:///modules/sensu/plugins/memory-metrics.rb",
+         "puppet:///modules/sensu/plugins/uptime-metrics.py",
+         "puppet:///modules/sensu/plugins/check_keystone-api.sh",
+         "puppet:///modules/sensu/plugins/check_neutron-api.py",
+         "puppet:///modules/sensu/plugins/keystone-token-metrics.rb",
+         "puppet:///modules/sensu/plugins/neutron-agent-status.py",
+         "puppet:///modules/sensu/plugins/nova-hypervisor-metrics.py",
+         "puppet:///modules/sensu/plugins/nova-server-state-metrics.py",
+         "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb",
+         "puppet:///modules/sensu/plugins/disk-metrics.rb",
+         "puppet:///modules/sensu/plugins/vmstat-metrics.rb",
+         "puppet:///modules/sensu/plugins/iostat-metrics.rb"
+      ]
+    }
+}
   class { 'moc_openstack::firewall':
     interface   => $ceph_iface,
     public_net  => $public_net,
@@ -884,6 +916,7 @@ class quickstack::controller_common (
   class {'moc_openstack::keystone_all_semodule':}
  
   # Installs scripts for automated backups
+if hiera('moc::dobackups') == 'true' {
   class {'backups':
     enabled      => $backups_enabled,
     user         => $backups_user, 
@@ -899,7 +932,7 @@ class quickstack::controller_common (
     cron_min     => $backups_min,
     keep_days    => $backups_keep_days,
   }
-     
+}
 
   if str2bool_i("$enable_ceilometer") {
     class { 'ceilometer::client::controller': }
@@ -992,6 +1025,26 @@ class quickstack::controller_common (
 
   class {'moc_openstack::suricata': }
 
+
+  # Create entries in /etc/hosts
+  class {'hosts':
+    before => Class['quickstack::amqp::server', 'quickstack::db::mysql'],
+  }
+
+  class {'moc_openstack::configure_pubnet':
+    pub_iface   => $pub_iface,
+    pub_vlan    => $pub_vlan,
+    pub_netmask => $pub_netmask,
+    pub_net     => $pub_net,
+    #before      => Class['hosts'],
+  }
+
+  class {'moc_openstack::configure_privnet':
+    priv_iface   => $priv_iface,
+    priv_netmask => $priv_netmask,
+    priv_net     => $priv_net,
+    #before => Class['hosts'],
+  }
   if hiera('moc::clusterdeployment') == 'true' {
     class {'::galera::server':
       mysql_root_password => $mysql_root_password,

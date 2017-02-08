@@ -423,12 +423,12 @@ class keystone(
   $ssl_cert_subject       = '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost',
   $cache_dir              = '/var/cache/keystone',
   $memcache_servers       = false,
-  $manage_service         = true,
+  $manage_service         = false,
   $cache_backend          = 'keystone.common.cache.noop',
   $cache_backend_argument = undef,
   $debug_cache_backend    = false,
   $token_caching          = true,
-  $enabled                = true,
+  $enabled                = false,
   $database_connection    = 'sqlite:////var/lib/keystone/keystone.db',
   $database_idle_timeout  = '200',
   $enable_pki_setup       = true,
@@ -917,5 +917,16 @@ class keystone(
         'fernet_tokens/max_active_keys':   ensure => absent;
     }
   }
-
+  file { '/etc/httpd/conf.d/wsgi-keystone.conf':
+    notify  => Service['httpd'],
+    mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    require => Package['httpd'],
+    source => 'puppet:///modules/keystone/wsgi-keystone.conf',
+  }
+  exec { "Disable keystone as a service":
+    command   => "/usr/sbin/chkconfig openstack-keystone off && /usr/sbin/service openstack-keystone stop && /usr/sbin/lsof -i -n -P|grep 5000 > /dev/null || /usr/sbin/service httpd restart",
+    require   => File['/etc/httpd/conf.d/wsgi-keystone.conf']
+  }
 }

@@ -1,6 +1,6 @@
 class moc_openstack::dnsmasq_neutron (
   $file_path  = '/etc/neutron/dnsmasq-neutron.conf',
-  $mtu_config = 'dhcp-option-force=26,1450',
+  $mtu_config = 'dhcp-option-force=26,9000',
 ) {
 
   file {$file_path:

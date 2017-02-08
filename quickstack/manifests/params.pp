@@ -32,9 +32,7 @@ class quickstack::params (
   $ceph_user,
   $nova_uuid,
   $ceph_key,
-  $ceph_iface,
-  $ceph_vlan,
-  
+
   # Keystone Endpoints
   # Kilo keystone now needs fully quallified urls
   # Instead of old IP / Port as seperate params
@@ -409,6 +407,26 @@ class quickstack::params (
 
   # repo server
   $repo_server,
+
+  # interface configuration
+  $lenovo_pub_iface,
+  $lenovo_priv_iface,
+  $lenovo_ceph_iface,
+  $quanta_pub_iface,
+  $quanta_priv_iface,
+  $quanta_ceph_iface,
+  $default_pub_iface,
+  $default_priv_iface,
+  $default_ceph_iface,
+  $pub_vlan,
+  $pub_netmask,
+  $priv_netmask,
+  $pub_net,
+  $pub_ip,
+  $priv_net,
+  $ceph_net,
+  $ceph_vlan,
+  $ceph_netmask,
 
   # ceilometer parameters
   $ceilometer_url,

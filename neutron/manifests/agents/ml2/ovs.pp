@@ -115,9 +115,9 @@ class neutron::agents::ml2::ovs (
   include ::neutron::params
   require vswitch::ovs
 
-  if $enable_tunneling and ! $local_ip {
-    fail('Local ip for ovs agent must be set when tunneling is enabled')
-  }
+#  if $enable_tunneling and ! $local_ip {
+#    fail('Local ip for ovs agent must be set when tunneling is enabled')
+#  }
 
   if $enable_distributed_routing and ! $l2_population {
     fail('L2 population must be enabled when DVR is enabled')

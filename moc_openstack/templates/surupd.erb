@@ -1,4 +1,4 @@
-wget -q http://<%= scope.function_hiera(['quickstack::params::repo_server']) %>/misc/emerging.rules.tar.gz > /dev/null && tar -xvzf emerging.rules.tar.gz -C /etc/suricata/ > /dev/null || exit
+wget -qc http://<%= scope.function_hiera(['quickstack::params::repo_server']) %>/misc/emerging.rules.tar.gz > /dev/null && tar -xvzf emerging.rules.tar.gz -C /etc/suricata/ > /dev/null || exit
 rm -rf emerging.rules.tar.gz && sed -i s/alert/drop/g /etc/suricata/rules/drop.rules && sed -i s/alert/drop/g /etc/suricata/rules/emerging-scan.rules || exit
 sed -i /2006546/d /etc/suricata/rules/emerging-scan.rules && sed -i /2018754/d /etc/suricata/rules/emerging-scan.rules || exit
 sed -i /2210029/d /etc/suricata/rules/stream-events.rules && sed -i /2210045/d /etc/suricata/rules/stream-events.rules || exit

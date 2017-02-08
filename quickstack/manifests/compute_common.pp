@@ -84,7 +84,6 @@ class quickstack::compute_common (
   $ceph_user                    = $quickstack::params::ceph_user,
   $nova_uuid                    = $quickstack::params::nova_uuid,
   $rbd_key                      = $quickstack::params::rbd_key,
-  $ceph_iface                   = $quickstack::params::ceph_iface,
   $ceph_vlan                    = $quickstack::params::ceph_vlan,
   $sensu_client_enable          = $quickstack::params::sensu_client_enable,
   $sensu_rabbitmq_host          = $quickstack::params::sensu_rabbitmq_host,
@@ -119,6 +118,19 @@ class quickstack::compute_common (
   $allow_resize_to_same_host    = $quickstack::params::allow_resize,
   $allow_migrate_to_same_host   = $quickstack::params::allow_migrate,
   $repo_server                  = $quickstack::params::repo_server,
+  $lenovo_pub_iface             = $quickstack::params::lenovo_pub_iface,
+  $lenovo_priv_iface            = $quickstack::params::lenovo_priv_iface,
+  $lenovo_ceph_iface            = $quickstack::params::lenovo_ceph_iface,
+  $quanta_pub_iface             = $quickstack::params::quanta_pub_iface,
+  $quanta_priv_iface            = $quickstack::params::quanta_priv_iface,
+  $quanta_ceph_iface            = $quickstack::params::quanta_ceph_iface,
+  $default_pub_iface            = $quickstack::params::default_pub_iface,
+  $default_priv_iface           = $quickstack::params::default_priv_iface,
+  $default_ceph_iface           = $quickstack::params::default_ceph_iface,
+  $priv_netmask                 = $quickstack::params::priv_netmask,
+  $priv_net                     = $quickstack::params::priv_net,
+  $ceph_net                     = $quickstack::params::ceph_net,
+  $ceph_netmask                 = $quickstack::params::ceph_netmask,
   $admin_password               = $quickstack::params::admin_password,
   $enable_ceilometer            = $quickstack::params::enable_ceilometer,
   $controller_admin_host        = $quickstack::params::controller_admin_host,
@@ -133,13 +145,28 @@ class quickstack::compute_common (
 
   # Create entries in /etc/hosts
   class {'hosts':}
+  if $::productname == 'QSSC-S99' {
+    $pub_iface  = $quanta_pub_iface
+    $priv_iface = $quanta_priv_iface
+    $ceph_iface = $quanta_ceph_iface
+  }
+  elsif 'System x3550 M5' in $::productname {
+    $pub_iface  = $lenovo_pub_iface
+    $priv_iface = $lenovo_priv_iface
+    $ceph_iface = $lenovo_ceph_iface
+  }
+  else {
+    $pub_iface  = $default_pub_iface
+    $priv_iface = $default_priv_iface
+    $ceph_iface = $default_ceph_iface
+  }
 
   class {'quickstack::openstack_common': }
 
   # Temporary fix for glanceclient bug: 1244291
-  class {'moc_openstack::ssl::temp_glance_fix':
-    require => Package['nova-common'],
-  }
+#  class {'moc_openstack::ssl::temp_glance_fix':
+#    require => Package['nova-common'],
+#  }
 
   if str2bool_i("$use_ssl") {
     if str2bool_i("$amqp_ssl") {
@@ -256,6 +283,7 @@ class quickstack::compute_common (
     class { 'moc_openstack::configure_nova_ceph':
            nova_uuid     => $nova_uuid,
            ceph_key      => $ceph_key,
+           ceph_user     => $ceph_user,
     }
   } else {
     class { '::nova::compute::libvirt':
@@ -376,6 +404,8 @@ class quickstack::compute_common (
     ceph_vlan      => $ceph_vlan,
     ceph_key       => $ceph_key,
     ceph_iface     => $ceph_iface,
+    ceph_net       => $ceph_net,
+    ceph_netmask   => $ceph_netmask,
   }
 
   class { 'moc_openstack::firewall':
@@ -396,40 +426,46 @@ class quickstack::compute_common (
   package { "yum-utils":
     ensure => latest,
   }
-#Customization for configuring sensu
 
-  class { '::sensu':
-    client                => $sensu_client_enable,
-    sensu_plugin_name     => 'sensu-plugin',
-    sensu_plugin_version  => 'installed',
-    sensu_plugin_provider => 'gem',
-    purge_config          => true,
-    rabbitmq_host         => $sensu_rabbitmq_host,
-    rabbitmq_user         => $sensu_rabbitmq_user,
-    rabbitmq_password     => $sensu_rabbitmq_password,
-    rabbitmq_vhost        => '/sensu',
-    subscriptions         => $sensu_client_subscriptions,
-    client_keepalive      => $sensu_client_keepalive,
-    plugins               => [
-       "puppet:///modules/sensu/plugins/check-mem.sh",
-       "puppet:///modules/sensu/plugins/cpu-metrics.rb",
-       "puppet:///modules/sensu/plugins/disk-usage-metrics.rb",
-       "puppet:///modules/sensu/plugins/load-metrics.rb",
-       "puppet:///modules/sensu/plugins/check-ceph.rb",
-       "puppet:///modules/sensu/plugins/check-disk-fail.rb",
-       "puppet:///modules/sensu/plugins/memory-metrics.rb",
-       "puppet:///modules/sensu/plugins/uptime-metrics.py",
-       "puppet:///modules/sensu/plugins/check_keystone-api.sh",
-       "puppet:///modules/sensu/plugins/keystone-token-metrics.rb",
-       "puppet:///modules/sensu/plugins/nova-hypervisor-metrics.py",
-       "puppet:///modules/sensu/plugins/nova-server-state-metrics.py",
-       "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb",
-       "puppet:///modules/sensu/plugins/disk-metrics.rb",
-       "puppet:///modules/sensu/plugins/vmstat-metrics.rb",
-       "puppet:///modules/sensu/plugins/iostat-metrics.rb"
-    ]
+  package { "openstack-utils":
+    ensure => latest,
   }
-  
+
+#This belongs in a separate manifest and needs to be declared here not defined
+#Customization for configuring sensu
+if hiera('moc::usesensu') == 'true' {
+    class { '::sensu':
+      client                => $sensu_client_enable,
+      sensu_plugin_name     => 'sensu-plugin',
+      sensu_plugin_version  => 'installed',
+      sensu_plugin_provider => 'gem',
+      purge_config          => true,
+      rabbitmq_host         => $sensu_rabbitmq_host,
+      rabbitmq_user         => $sensu_rabbitmq_user,
+      rabbitmq_password     => $sensu_rabbitmq_password,
+      rabbitmq_vhost        => '/sensu',
+      subscriptions         => $sensu_client_subscriptions,
+      client_keepalive      => $sensu_client_keepalive,
+      plugins               => [
+         "puppet:///modules/sensu/plugins/check-mem.sh",
+         "puppet:///modules/sensu/plugins/cpu-metrics.rb",
+         "puppet:///modules/sensu/plugins/disk-usage-metrics.rb",
+         "puppet:///modules/sensu/plugins/load-metrics.rb",
+         "puppet:///modules/sensu/plugins/check-ceph.rb",
+         "puppet:///modules/sensu/plugins/check-disk-fail.rb",
+         "puppet:///modules/sensu/plugins/memory-metrics.rb",
+         "puppet:///modules/sensu/plugins/uptime-metrics.py",
+         "puppet:///modules/sensu/plugins/check_keystone-api.sh",
+         "puppet:///modules/sensu/plugins/keystone-token-metrics.rb",
+         "puppet:///modules/sensu/plugins/nova-hypervisor-metrics.py",
+         "puppet:///modules/sensu/plugins/nova-server-state-metrics.py",
+         "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb",
+         "puppet:///modules/sensu/plugins/disk-metrics.rb",
+         "puppet:///modules/sensu/plugins/vmstat-metrics.rb",
+         "puppet:///modules/sensu/plugins/iostat-metrics.rb"
+      ]
+    }
+}
 
   class {'quickstack::ntp':
     servers => $ntp_local_servers,
@@ -481,7 +517,7 @@ class quickstack::compute_common (
   package { "rsync":
       ensure => latest,
   }
-
+if hiera('moc::dobackups') == 'true' {
   class {'backups':
     enabled      => $backups_enabled,
     user         => $backups_user,
@@ -497,7 +533,7 @@ class quickstack::compute_common (
     cron_min     => $backups_min, 
     keep_days    => $backups_keep_days,
   }
-
+}
 
   class {'moc_openstack::cronjob':
     repo_server => $repo_server,
@@ -506,7 +542,12 @@ class quickstack::compute_common (
 
   class {'moc_openstack::suricata':
   }
-
+  class {'moc_openstack::configure_privnet':
+    priv_iface   => $priv_iface,
+    priv_netmask => $priv_netmask,
+    priv_net     => $priv_net,
+    before => Class['hosts'],
+  }
   if str2bool_i("$keystonerc") {
     class { 'quickstack::admin_client':
       admin_password        => $admin_password,
@@ -518,6 +559,18 @@ class quickstack::compute_common (
   class {'moc_openstack::nova_resize':
     require => Package['nova-common'],
   }
+
+package { 'qemu-kvm-common-rhev':
+  ensure => present,
+  } ->
+   service { 'ksm':
+     ensure => running,
+     enable => true,
+   } ->
+   service { 'ksmtuned':
+     ensure => running,
+     enable => true,
+   }
 
   include sysstat
 }

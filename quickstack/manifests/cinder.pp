@@ -51,6 +51,7 @@ class quickstack::cinder(
 
   cinder_config {
     'DEFAULT/glance_host': value => $glance_host;
+    'DEFAULT/osapi_volume_use_ssl': value => True ;
     'DEFAULT/notification_driver': value => 'cinder.openstack.common.notifier.rpc_notifier'
   }
   if $max_retries {

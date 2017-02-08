@@ -83,6 +83,7 @@ class nova::compute::libvirt (
   $vncserver_listen                           = '127.0.0.1',
   $migration_support                          = false,
   $libvirt_cpu_mode                           = false,
+  $libvirt_cpu_model                          = false,
   $libvirt_disk_cachemodes                    = [],
   $libvirt_inject_password                    = false,
   $libvirt_inject_key                         = false,
@@ -99,7 +100,8 @@ class nova::compute::libvirt (
   Service['libvirt'] -> Service['nova-compute']
 
   # libvirt_cpu_mode has different defaults depending on hypervisor.
-  if !$libvirt_cpu_mode {
+#  if !$libvirt_cpu_mode {
+  if hiera('nova::compute::libvirt::libvirt_cpu_mode') == 'default' {
     case $libvirt_virt_type {
       'kvm','qemu': {
         $libvirt_cpu_mode_real = 'host-model'
@@ -160,6 +162,15 @@ class nova::compute::libvirt (
     'libvirt/inject_password':  value => $libvirt_inject_password;
     'libvirt/inject_key':       value => $libvirt_inject_key;
     'libvirt/inject_partition': value => $libvirt_inject_partition;
+  }
+  if hiera('nova::compute::libvirt::libvirt_cpu_mode') == 'custom'{
+    nova_config {
+      'libvirt/cpu_model':         value => $libvirt_cpu_model;
+    }
+  } else {
+    nova_config {
+      'libvirt/cpu_model':         ensure => absent;
+    }
   }
 
   if size($libvirt_disk_cachemodes) > 0 {

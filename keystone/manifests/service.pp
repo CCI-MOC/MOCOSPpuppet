@@ -81,9 +81,9 @@ class keystone::service(
   include ::keystone::params
 
   service { 'keystone':
-    ensure     => $ensure,
+#    ensure     => $ensure,
     name       => $service_name,
-    enable     => $enable,
+#    enable     => $enable,
     hasstatus  => $hasstatus,
     hasrestart => $hasrestart,
     provider   => $provider

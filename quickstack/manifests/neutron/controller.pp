@@ -125,7 +125,6 @@ class quickstack::neutron::controller (
   $nova_default_floating_pool    = $quickstack::params::nova_default_floating_pool,
   $ovs_vlan_ranges               = $quickstack::params::ovs_vlan_ranges,
   #added for extra ovs plugin init - moc specific
-  $ovs_tunnel_iface              = $quickstack::params::ovs_tunnel_iface,
   $ovs_tunnel_network            = '',
   $ovs_bridge_mappings           = $quickstack::params::ovs_bridge_mappings,
   $ovs_bridge_uplinks            = $quickstack::params::ovs_bridge_uplinks,
@@ -183,6 +182,9 @@ class quickstack::neutron::controller (
   $auth_uri                      = $quickstack::params::auth_uri,
   $identity_uri                  = $quickstack::params::identity_uri,
   $ovs_l2_population             = 'true',
+  $lenovo_priv_iface             = $quickstack::params::lenovo_priv_iface,
+  $quanta_priv_iface             = $quickstack::params::quanta_priv_iface,
+  $default_priv_iface            = $quickstack::params::default_priv_iface,
 ) inherits quickstack::params {
 
   if hiera('moc::clusterdeployment') == 'true' {
@@ -193,6 +195,16 @@ class quickstack::neutron::controller (
     $l3_ha                            = 'False'
     $dhcp_agents_per_network          = '1'
     $allow_automatic_l3agent_failover = 'False'
+  }
+
+  if $::productname == 'QSSC-S99' {
+      $local_ip = find_ip("$ovs_tunnel_network","$quanta_priv_iface","")
+  }
+  elsif 'System x3550 M5' in $::productname {
+      $local_ip = find_ip("$ovs_tunnel_network","$lenovo_priv_iface","")
+  }
+  else {
+      $local_ip = find_ip("$ovs_tunnel_network","$default_priv_iface","")
   }
 
   if str2bool_i("$use_ssl") {
@@ -457,8 +469,6 @@ class quickstack::neutron::controller (
       tenant_network_type          => $tenant_network_type,
     }
   }
-
-  $local_ip = find_ip("$ovs_tunnel_network","$ovs_tunnel_iface","")
 
   class { '::neutron::agents::ml2::ovs':
     bridge_uplinks   => $ovs_bridge_uplinks,

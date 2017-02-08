@@ -23,14 +23,14 @@ class moc_openstack::ssl::install_rootca (
     ensure => present,
   }
 
-  exec { "update-urllib3":
+#  exec { "update-urllib3":
     # used urllib3 version 1.11 since there was bug in 1.10.4 which ignored
     # signed certs by rootCA. Version 1.11 introduced various issues with glance.
     # Hence, commented it out and used version 1.10.2 which worked fine.
     #command   => "/bin/pip install urllib3[secure] --upgrade",
-    command   => "/bin/pip install urllib3==1.10.2",
-    require   => Package['python-requests','python-pip'],
-  }
+#    command   => "/bin/pip install urllib3==1.10.2",
+#    require   => Package['python-requests','python-pip'],
+#  }
 
   # appends rootCA.crt to end of trusted certs.
   # python-requests use the CA file at trusted_store.

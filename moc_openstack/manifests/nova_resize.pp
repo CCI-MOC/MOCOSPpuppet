@@ -7,6 +7,7 @@ class moc_openstack::nova_resize (
   exec {'enable bash for nova':
     command => "usermod -s /bin/bash nova",
     path    => ['/usr/bin', '/usr/sbin',],
+    require => Class[nova]
   } ->
   file {'/var/lib/nova/.ssh':
     ensure => 'directory',

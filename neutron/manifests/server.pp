@@ -313,7 +313,8 @@ class neutron::server (
     'database/min_pool_size':                   value => $database_min_pool_size;
     'database/max_pool_size':                   value => $database_max_pool_size;
     'database/max_overflow':                    value => $database_max_overflow;
-  }
+    'DEFAULT/global_physnet_mtu':               value => 9050; 
+   }
 
   if $state_path {
     # If we got state_path here, display deprecation warning and override the value from
@@ -361,9 +362,23 @@ class neutron::server (
     } else {
 
       neutron_config {
-        'keystone_authtoken/admin_tenant_name': value => $auth_tenant;
-        'keystone_authtoken/admin_user':        value => $auth_user;
-        'keystone_authtoken/admin_password':    value => $auth_password, secret => true;
+        'keystone_authtoken/admin_tenant_name':  ensure => absent;
+        'keystone_authtoken/auth_plugin':        value  => 'password';
+        'keystone_authtoken/auth_url':           value  => hiera('quickstack::params::auth_url');
+        'keystone_authtoken/admin_user':         ensure => absent;
+        'keystone_authtoken/username':           value  => $auth_user;
+        'keystone_authtoken/project_name':       value  => 'services';
+        'keystone_authtoken/user_domain_id':     value  => 'default';
+        'keystone_authtoken/project_domain_id':  value  => 'default';
+        'keystone_authtoken/admin_password':     ensure => absent;
+        'keystone_authtoken/password':           value  => $auth_password, secret => true;
+        'nova/auth_plugin':                      value  => 'password';
+        'nova/auth_url':                         value  => hiera('quickstack::params::auth_url');
+        'nova/username':                         value  => 'nova';
+        'nova/user_domain_id':                   value  => 'default';
+        'nova/password':                         value  => hiera('quickstack::params::nova_user_password');
+        'nova/project_name':                     value  => 'services';
+        'nova/project_domain_id':                value  => 'default';
       }
 
       neutron_api_config {
@@ -465,7 +480,7 @@ class neutron::server (
       }
 
       neutron_config {
-        'keystone_authtoken/auth_uri': value => $auth_uri_real;
+        'keystone_authtoken/auth_uri': ensure => absent;
       }
       neutron_api_config {
         'filter:authtoken/auth_uri': value => $auth_uri_real;
@@ -473,7 +488,7 @@ class neutron::server (
 
       if $identity_uri {
         neutron_config {
-          'keystone_authtoken/identity_uri': value => $identity_uri;
+          'keystone_authtoken/identity_uri': ensure => absent;
         }
         neutron_api_config {
           'filter:authtoken/identity_uri': value => $identity_uri;

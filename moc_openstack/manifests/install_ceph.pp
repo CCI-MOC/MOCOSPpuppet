@@ -1,6 +1,14 @@
 # installs ceph from template in modules/moc_openstack/templates
 # This is common for both controller and compute
-class moc_openstack::install_ceph($ceph_nodes, $ceph_endpoints, $ceph_user, $ceph_vlan, $ceph_key, $ceph_iface) {
+class moc_openstack::install_ceph(
+  $ceph_nodes,
+  $ceph_endpoints,
+  $ceph_user,
+  $ceph_vlan,
+  $ceph_key,
+  $ceph_iface,
+  $ceph_net,
+  $ceph_netmask) {
   if $::osfamily == 'RedHat' {
     file { "/etc/ceph/":
       ensure => directory,

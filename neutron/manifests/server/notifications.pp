@@ -85,13 +85,14 @@ class neutron::server::notifications (
   }
 
   neutron_config {
-    'DEFAULT/notify_nova_on_port_status_changes': value => $notify_nova_on_port_status_changes;
-    'DEFAULT/notify_nova_on_port_data_changes':   value => $notify_nova_on_port_data_changes;
-    'DEFAULT/send_events_interval':               value => $send_events_interval;
-    'DEFAULT/nova_url':                           value => $nova_url;
-    'DEFAULT/nova_admin_auth_url':                value => $nova_admin_auth_url;
-    'DEFAULT/nova_admin_username':                value => $nova_admin_username;
-    'DEFAULT/nova_admin_password':                value => $nova_admin_password, secret => true;
+    'DEFAULT/notify_nova_on_port_status_changes': value  => $notify_nova_on_port_status_changes;
+    'DEFAULT/notify_nova_on_port_data_changes':   value  => $notify_nova_on_port_data_changes;
+    'DEFAULT/send_events_interval':               value  => $send_events_interval;
+    'DEFAULT/nova_url':                           value  => $nova_url;
+    'DEFAULT/nova_admin_auth_url':                ensure => absent;
+    'DEFAULT/nova_admin_username':                ensure => absent;
+    'DEFAULT/nova_admin_password':                ensure => absent;
+    'DEFAULT/nova_admin_tenant_id':               ensure => absent;
   }
 
   if $nova_region_name {
@@ -104,18 +105,18 @@ class neutron::server::notifications (
     }
   }
 
-  if $nova_admin_tenant_id {
-    neutron_config {
-      'DEFAULT/nova_admin_tenant_id': value => $nova_admin_tenant_id;
-    }
-  } else {
-    nova_admin_tenant_id_setter {'nova_admin_tenant_id':
-      ensure           => present,
-      tenant_name      => $nova_admin_tenant_name,
-      auth_url         => $nova_admin_auth_url,
-      auth_username    => $nova_admin_username,
-      auth_password    => $nova_admin_password,
-      auth_tenant_name => $nova_admin_tenant_name,
-    }
-  }
+#  if $nova_admin_tenant_id {
+#    neutron_config {
+#      'DEFAULT/nova_admin_tenant_id': value => $nova_admin_tenant_id;
+#    }
+#  } else {
+#    nova_admin_tenant_id_setter {'nova_admin_tenant_id':
+#      ensure           => present,
+#      tenant_name      => $nova_admin_tenant_name,
+#      auth_url         => $nova_admin_auth_url,
+#      auth_username    => $nova_admin_username,
+#      auth_password    => $nova_admin_password,
+#      auth_tenant_name => $nova_admin_tenant_name,
+#    }
+#  }
 }

@@ -32,7 +32,7 @@ class keystone::params {
       $python_memcache_package_name = 'python-memcached'
       $service_provider             = undef
       $keystone_wsgi_script_source  = '/usr/share/keystone/keystone.wsgi'
-      $paste_config                 = '/usr/share/keystone/keystone-dist-paste.ini'
+      $paste_config                 = 'keystone-paste.ini'
     }
   }
 }

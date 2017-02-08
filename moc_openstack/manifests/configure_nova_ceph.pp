@@ -1,6 +1,6 @@
 # Configures nova to talk to ceph 
 # This is specific to  compute node
-class moc_openstack::configure_nova_ceph($nova_uuid, $ceph_key) {
+class moc_openstack::configure_nova_ceph($nova_uuid, $ceph_key, $ceph_user) {
   if $::osfamily == 'RedHat' {
     file { "/etc/nova/secret.xml":
       path => "/etc/nova/secret.xml",

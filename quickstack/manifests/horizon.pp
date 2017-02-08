@@ -26,11 +26,11 @@ class quickstack::horizon(
     notify => Class['::horizon'],
   }
 
-  file {'/etc/httpd/conf.d/rootredirect.conf':
-    ensure  => present,
-    content => 'RedirectMatch ^/$ /dashboard/',
-    notify  => File['/etc/httpd/conf.d/openstack-dashboard.conf'],
-  }
+#  file {'/etc/httpd/conf.d/rootredirect.conf':
+#    ensure  => present,
+#    content => 'RedirectMatch ^/$ /dashboard/',
+#    notify  => File['/etc/httpd/conf.d/openstack-dashboard.conf'],
+#  }
 
   if str2bool_i("$listen_ssl") {
     apache::listen { '443': }

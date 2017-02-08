@@ -91,7 +91,7 @@ class galera::server (
   $bootstrap             = false,
   $debug                 = false,
   $wsrep_node_address    = undef,
-  $wsrep_cluster_address    = undef,
+  $wsrep_cluster_address = undef,
   $wsrep_provider        = '/usr/lib64/galera/libgalera_smm.so',
   $wsrep_cluster_name    = 'galera_cluster',
   $wsrep_cluster_members = [ $::ipaddress ],

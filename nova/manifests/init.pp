@@ -475,9 +475,10 @@ class nova(
   }
 
   nova_config { 'DEFAULT/auth_strategy': value => $auth_strategy }
-
-  if $memcached_servers {
-    nova_config { 'DEFAULT/memcached_servers': value  => join($memcached_servers, ',') }
+  if hiera('moc::clusterdeployment') == 'true' {
+    $n1 = hiera('ha::node1')
+    $n2 = hiera('ha::node2')
+    nova_config { 'DEFAULT/memcached_servers': value  => "$n1:11211,$n2:11211" }
   } else {
     nova_config { 'DEFAULT/memcached_servers': ensure => absent }
   }

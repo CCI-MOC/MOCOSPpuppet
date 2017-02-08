@@ -27,17 +27,11 @@ pcs resource create virtual_ip ocf:heartbeat:IPaddr2 ip=$vip cidr_netmask=32 op 
 sleep 2
 pcs resource create intvirt_ip ocf:heartbeat:IPaddr2 ip=$internalvip cidr_netmask=32 op monitor interval=5s || abort
 sleep 2
-pcs resource create webserver systemd:httpd configfile=/etc/httpd/conf/httpd.conf op monitor interval=10s || abort
-sleep 2
-pcs constraint colocation add webserver virtual_ip INFINITY --force || abort
-sleep 2
 pcs constraint colocation add intvirt_ip virtual_ip INFINITY --force || abort
 sleep 2
-pcs constraint order virtual_ip then webserver --force || abort
-sleep 2
+
 pcs cluster stop --all || abort
 pcs cluster start --all || abort
 sleep 5
 
 echo Script Success
-

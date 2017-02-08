@@ -2,7 +2,7 @@
 class quickstack::neutron::compute (
   $agent_type                   = 'ovs',
   $auth_host                    = $quickstack::params::controller_pub_host,
-  $ceilometer                   = 'true',
+  $ceilometer                   = 'false',
   $ceilometer_metering_secret   = $quickstack::params::ceilometer_metering_secret,
   $ceilometer_user_password     = $quickstack::params::ceilometer_user_password,
   $manage_ceph_conf             = true,
@@ -42,7 +42,6 @@ class quickstack::neutron::compute (
   $ovs_bridge_mappings          = $quickstack::params::ovs_bridge_mappings,
   $ovs_bridge_uplinks           = $quickstack::params::ovs_bridge_uplinks,
   $ovs_l2_population            = 'False',
-  $ovs_tunnel_iface             = $quickstack::params::ovs_tunnel_iface, 
   $ovs_tunnel_network           = '',
   $ovs_tunnel_types             = $quickstack::params::ovs_tunnel_types,
   $ovs_vlan_ranges              = $quickstack::params::ovs_vlan_ranges,
@@ -72,7 +71,6 @@ class quickstack::neutron::compute (
   $libvirt_images_type          = 'rbd',
   $rbd_user                     = $quickstack::params::cinder_rbd_user,
   $rbd_secret_uuid              = $quickstack::params::cinder_rbd_secret_uuid,
-  $private_iface                = $quickstack::params::ovs_tunnel_iface,
   $private_ip                   = '',
   $private_network              = '',
   $network_device_mtu           = undef,
@@ -86,8 +84,23 @@ class quickstack::neutron::compute (
   $ca_file                      = $quickstack::params::root_ca_cert,
   $neutron_pub_url              = $quickstack::params::neutron_pub_url,
   $keystone_admin_url           = $quickstack::params::keystone_admin_url,
-
+  $lenovo_priv_iface            = $quickstack::params::lenovo_priv_iface,
+  $quanta_priv_iface            = $quickstack::params::quanta_priv_iface,
+  $default_priv_iface           = $quickstack::params::default_priv_iface,
 ) inherits quickstack::params {
+
+  if $::productname == 'QSSC-S99' {
+      $local_ip      = find_ip("$ovs_tunnel_network","$quanta_priv_iface","")
+      $private_iface = $quanta_priv_iface
+  }
+  elsif 'System x3550 M5' in $::productname {
+      $local_ip      = find_ip("$ovs_tunnel_network","$lenovo_priv_iface","")
+      $private_iface = $lenovo_priv_iface
+  }
+  else {
+      $local_ip      = find_ip("$ovs_tunnel_network","$default_priv_iface","")
+      $private_iface = $default_priv_iface
+  }
 
   if str2bool_i("$use_ssl") {
     $auth_protocol = 'https'
@@ -185,7 +198,6 @@ class quickstack::neutron::compute (
       'ml2_type_vxlan/vxlan_group'       : value => $vxlan_group;
     }
 
-    $local_ip = find_ip("$ovs_tunnel_network","$ovs_tunnel_iface","")
     class { '::neutron::agents::ml2::ovs':
       bridge_uplinks   => $ovs_bridge_uplinks,
       #bridge_mappings  => $ovs_bridge_mappings,
