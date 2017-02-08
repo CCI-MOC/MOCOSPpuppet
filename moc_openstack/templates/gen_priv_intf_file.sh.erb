@@ -1,0 +1,15 @@
+#!/bin/sh
+
+FILE="/etc/sysconfig/network-scripts/ifcfg-<%= priv_iface %>"
+
+#HOST=$(hostname | cut -d- -f3 | cut -d. -f1)
+HOST=$((hostname -s | cut -d- -f3|grep . || hostname -s | cut -d- -f2|grep .) | sed -e 's/^[0]*//')
+HOST_IP="<%= priv_net %>.$HOST"
+
+rm $FILE
+touch $FILE
+echo "DEVICE=\"<%= priv_iface %>\"" >> $FILE
+echo "ONBOOT=yes" >> $FILE
+echo "IPADDR=$HOST_IP" >> $FILE
+echo "NETMASK=<%= priv_netmask %>" >> $FILE
+echo "MTU=9050" >> $FILE
