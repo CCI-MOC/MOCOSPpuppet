@@ -449,8 +449,5 @@ class quickstack::params (
   $heat_domain_password,
   $sahara_plugins,
   $sahara_manage_policy,
-  $sahara_production,
-
-  $ha_controller_ip_public,
 ) {
 }

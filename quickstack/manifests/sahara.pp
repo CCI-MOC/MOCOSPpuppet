@@ -15,8 +15,6 @@ class quickstack::sahara (
   $sahara_key            = $quickstack::params::sahara_key,
   $sahara_cert           = $quickstack::params::sahara_cert,
   $sahara_manage_policy  = $quickstack::params::sahara_manage_policy,
-  $controller_ip_addr    = $quickstack::params::ha_controller_ip_public,
-  $sahara_production     = $quickstack::params::sahara_production,
 ) {
   
   if str2bool_i($sahara_use_ssl) {
@@ -95,13 +93,13 @@ class quickstack::sahara (
     match  => "(    for service in).*"
   }
 
-  if str2bool_i($sahara_production) {
-    file_line { 'identity_dns':
-      notify => Service['openstack-sahara-all'], # only restarts if change
-      path   => '/usr/lib/python2.7/site-packages/sahara/utils/cluster.py',
-      line   => "    hosts = \"127.0.0.1 localhost\\n${controller_ip_addr} ${hostname}\\n\"",
-      match  => '.*(localhost).*'
-    }
+  $controller_ip_addr = hiera('ha::vip')
+
+  file_line { 'identity_dns':
+    notify => Service['openstack-sahara-all'], # only restarts if change
+    path   => '/usr/lib/python2.7/site-packages/sahara/utils/cluster.py',
+    line   => "    hosts = \"127.0.0.1 localhost\\n${controller_ip_addr} ${hostname}\\n\"",
+    match  => '.*(localhost).*'
   }
 
   file { '/etc/sudoers.d/sahara-rootwrap':
