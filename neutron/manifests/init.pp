@@ -495,8 +495,10 @@ class neutron (
   neutron_config { 'DEFAULT/use_ssl' : value => $use_ssl; }
   if $use_ssl {
     neutron_config {
-      'DEFAULT/ssl_cert_file' : value => $cert_file;
-      'DEFAULT/ssl_key_file'  : value => $key_file;
+      'DEFAULT/ssl_cert_file' : ensure => absent;
+      'DEFAULT/ssl_key_file'  : ensure => absent;
+      'ssl/cert_file' :         value  => $cert_file;
+      'ssl/key_file'  :         value  => $key_file;
     }
 
     # Disable ssl_ca_file flag in [DEFAULT] section.

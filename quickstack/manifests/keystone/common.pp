@@ -63,7 +63,7 @@ class quickstack::keystone::common (
   $public_bind_host            = '0.0.0.0',
   $public_endpoint             = '127.0.0.1',
   $service_provider            = undef,
-  $token_driver                = 'keystone.token.persistence.backends.sql.Token',
+  $token_driver                = 'sql',
   $token_provider              = 'keystone.token.providers.pki.Provider',
   $use_syslog                  = false,
   $verbose                     = false,

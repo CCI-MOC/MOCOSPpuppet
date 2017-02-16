@@ -212,18 +212,19 @@ class nova::api(
   }
 
   nova_config {
-    'DEFAULT/enabled_apis':          value => $enabled_apis;
-    'DEFAULT/use_neutron':           value => true;
-    'DEFAULT/volume_api_class':      value => $volume_api_class;
-    'DEFAULT/ec2_listen':            value => $api_bind_address;
-    'DEFAULT/osapi_compute_listen':  value => $api_bind_address;
-    'DEFAULT/metadata_listen':       value => $metadata_listen;
-    'DEFAULT/osapi_volume_listen':   value => $api_bind_address;
-    'DEFAULT/osapi_compute_workers': value => $osapi_compute_workers;
-    'DEFAULT/ec2_workers':           value => $ec2_workers;
-    'DEFAULT/metadata_workers':      value => $metadata_workers;
-    'DEFAULT/use_forwarded_for':     value => $use_forwarded_for;
-    'osapi_v3/enabled':              value => $osapi_v3;
+    'DEFAULT/enabled_apis':          value  => $enabled_apis;
+    'DEFAULT/use_neutron':           value  => true;
+#    'DEFAULT/volume_api_class':     value  => $volume_api_class;
+    'DEFAULT/volume_api_class':      ensure => absent;
+    'DEFAULT/ec2_listen':            value  => $api_bind_address;
+    'DEFAULT/osapi_compute_listen':  value  => $api_bind_address;
+    'DEFAULT/metadata_listen':       value  => $metadata_listen;
+    'DEFAULT/osapi_volume_listen':   value  => $api_bind_address;
+    'DEFAULT/osapi_compute_workers': value  => $osapi_compute_workers;
+    'DEFAULT/ec2_workers':           value  => $ec2_workers;
+    'DEFAULT/metadata_workers':      value  => $metadata_workers;
+    'DEFAULT/use_forwarded_for':     value  => $use_forwarded_for;
+    'osapi_v3/enabled':              value  => $osapi_v3;
   }
 
   if ($neutron_metadata_proxy_shared_secret){

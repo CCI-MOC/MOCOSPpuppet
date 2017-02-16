@@ -366,4 +366,7 @@ class cinder::api (
     create_resources('openstacklib::service_validation', $validation_options_hash, {'subscribe' => 'Service[cinder-api]'})
   }
 
+  cinder_api_paste_ini {
+    'filter:sizelimit/paste.filter_factory': value => 'oslo_middleware.sizelimit:RequestBodySizeLimiter.factory';
+  }
 }

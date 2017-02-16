@@ -3,7 +3,7 @@ class quickstack::cron::keystone_token {
   # This seems like something that should be in puppet-keystone, but since it is
   # not, adding to quickstack.
   cron { 'token-flush':
-    ensure  => 'present',
+    ensure  => absent,
     command => '/usr/bin/keystone-manage token_flush >/dev/null 2>&1',
     minute  => '*/1',
     user    => 'keystone',

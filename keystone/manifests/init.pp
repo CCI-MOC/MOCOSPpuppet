@@ -60,12 +60,12 @@
 #
 # [*token_provider*]
 #   (optional) Format keystone uses for tokens.
-#   Defaults to 'keystone.token.providers.uuid.Provider'
+#   Defaults to 'fernet'
 #   Supports PKI, PKIZ, Fernet, and UUID.
 #
 # [*token_driver*]
 #   (optional) Driver to use for managing tokens.
-#   Defaults to 'keystone.token.persistence.backends.sql.Token'
+#   Defaults to 'sql'
 #
 # [*token_expiration*]
 #   (optional) Amount of time a token should remain valid (seconds).
@@ -73,7 +73,7 @@
 #
 # [*revoke_driver*]
 #   (optional) Driver for token revocation.
-#   Defaults to 'keystone.contrib.revoke.backends.sql.Revoke'
+#   Defaults to 'sql'
 #
 # [*cache_dir*]
 #   (optional) Directory created when token_provider is pki.
@@ -409,10 +409,10 @@ class keystone(
   $catalog_type           = 'sql',
   $catalog_driver         = false,
   $catalog_template_file  = '/etc/keystone/default_catalog.templates',
-  $token_provider         = 'keystone.token.providers.uuid.Provider',
-  $token_driver           = 'keystone.token.persistence.backends.sql.Token',
+  $token_provider         = 'fernet',
+  $token_driver           = 'sql',
   $token_expiration       = 3600,
-  $revoke_driver          = 'keystone.contrib.revoke.backends.sql.Revoke',
+  $revoke_driver          = 'sql',
   $public_endpoint        = false,
   $admin_endpoint         = false,
   $enable_ssl             = false,
@@ -684,7 +684,7 @@ class keystone(
     $catalog_driver_real = 'keystone.catalog.backends.templated.Catalog'
   }
   elsif ($catalog_type == 'sql') {
-    $catalog_driver_real = 'keystone.catalog.backends.sql.Catalog'
+    $catalog_driver_real = 'sql'
   }
 
   keystone_config {
