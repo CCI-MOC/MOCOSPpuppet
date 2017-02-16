@@ -152,6 +152,12 @@ class sahara(
     tag    => 'openstack',
   }
 
+  package { 'sahara-ui':
+    ensure => $package_ensure,
+    name   => 'openstack-sahara-ui',
+    tag    => 'openstack',
+  }
+
   # Because Sahara does not support SQLite, sahara-common will fail to be installed
   # if /etc/sahara/sahara.conf does not contain valid database connection and if the
   # database does not actually exist.
