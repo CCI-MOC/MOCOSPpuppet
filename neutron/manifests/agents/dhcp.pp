@@ -73,7 +73,7 @@ class neutron::agents::dhcp (
   $state_path             = '/var/lib/neutron',
   $resync_interval        = 30,
   $interface_driver       = 'neutron.agent.linux.interface.OVSInterfaceDriver',
-  $dhcp_domain            = 'openstacklocal',
+  $dhcp_domain            = 'moc.local',
   $dhcp_driver            = 'neutron.agent.linux.dhcp.Dnsmasq',
   $root_helper            = 'sudo neutron-rootwrap /etc/neutron/rootwrap.conf',
   $use_namespaces         = undef,

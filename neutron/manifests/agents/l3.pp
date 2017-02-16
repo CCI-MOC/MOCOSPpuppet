@@ -147,19 +147,19 @@ class neutron::agents::l3 (
   }
 
   neutron_l3_agent_config {
-    'DEFAULT/debug':                            value => $debug;
-    'DEFAULT/external_network_bridge':          value => $external_network_bridge;
-    'DEFAULT/interface_driver':                 value => $interface_driver;
-    'DEFAULT/router_id':                        value => $router_id;
-    'DEFAULT/gateway_external_network_id':      value => $gateway_external_network_id;
-    'DEFAULT/handle_internal_only_routers':     value => $handle_internal_only_routers;
-    'DEFAULT/metadata_port':                    value => $metadata_port;
-    'DEFAULT/send_arp_for_ha':                  value => $send_arp_for_ha;
-    'DEFAULT/periodic_interval':                value => $periodic_interval;
-    'DEFAULT/periodic_fuzzy_delay':             value => $periodic_fuzzy_delay;
-    'DEFAULT/enable_metadata_proxy':            value => $enable_metadata_proxy;
-    'DEFAULT/router_delete_namespaces':         value => $router_delete_namespaces;
-    'DEFAULT/agent_mode':                       value => $agent_mode;
+    'DEFAULT/debug':                            value  => $debug;
+    'DEFAULT/external_network_bridge':          ensure => absent;
+    'DEFAULT/interface_driver':                 value  => $interface_driver;
+    'DEFAULT/router_id':                        value  => $router_id;
+    'DEFAULT/gateway_external_network_id':      value  => $gateway_external_network_id;
+    'DEFAULT/handle_internal_only_routers':     value  => $handle_internal_only_routers;
+    'DEFAULT/metadata_port':                    value  => $metadata_port;
+    'DEFAULT/send_arp_for_ha':                  value  => $send_arp_for_ha;
+    'DEFAULT/periodic_interval':                value  => $periodic_interval;
+    'DEFAULT/periodic_fuzzy_delay':             value  => $periodic_fuzzy_delay;
+    'DEFAULT/enable_metadata_proxy':            value  => $enable_metadata_proxy;
+    'DEFAULT/router_delete_namespaces':         value  => $router_delete_namespaces;
+    'DEFAULT/agent_mode':                       value  => $agent_mode;
     'DEFAULT/use_namespaces':                   ensure => absent;
   }
 

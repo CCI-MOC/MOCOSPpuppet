@@ -117,8 +117,10 @@ class nova::network::neutron (
   nova_config {
     'DEFAULT/dhcp_domain':             value  => $dhcp_domain;
     'DEFAULT/firewall_driver':         value  => $firewall_driver;
-    'DEFAULT/network_api_class':       value  => $network_api_class;
-    'DEFAULT/security_group_api':      value  => $security_group_api;
+#    'DEFAULT/network_api_class':       value => $network_api_class;
+    'DEFAULT/network_api_class':       ensure => absent;
+#    'DEFAULT/security_group_api':      value => $security_group_api;
+    'DEFAULT/security_group_api':      ensure => absent;
     'DEFAULT/vif_plugging_is_fatal':   value  => $vif_plugging_is_fatal;
     'DEFAULT/vif_plugging_timeout':    value  => $vif_plugging_timeout;
     'neutron/auth_strategy':           ensure => absent;
@@ -133,7 +135,8 @@ class nova::network::neutron (
     'neutron/password':                value  => $neutron_admin_password, secret => true;
     'neutron/admin_auth_url':          ensure => absent;
     'neutron/auth_url':                value  => $aurlb;
-    'neutron/auth_plugin':             value  => 'password';
+    'neutron/auth_plugin':             ensure => absent;
+    'neutron/auth_type':               value  => 'password';
     'neutron/project_domain_name':     value  => 'default';
     'neutron/user_domain_name':        value  => 'default';
     'neutron/project_name':            value  => 'services';

@@ -313,7 +313,8 @@ class neutron::server (
     'database/min_pool_size':                   value => $database_min_pool_size;
     'database/max_pool_size':                   value => $database_max_pool_size;
     'database/max_overflow':                    value => $database_max_overflow;
-    'DEFAULT/global_physnet_mtu':               value => 9050; 
+    'DEFAULT/global_physnet_mtu':               value => 9050;
+    'DEFAULT/dns_domain':                       value => 'moc.local';
    }
 
   if $state_path {
@@ -363,7 +364,8 @@ class neutron::server (
 
       neutron_config {
         'keystone_authtoken/admin_tenant_name':  ensure => absent;
-        'keystone_authtoken/auth_plugin':        value  => 'password';
+        'keystone_authtoken/auth_plugin':        ensure => absent;
+        'keystone_authtoken/auth_type':          value  => 'password';
         'keystone_authtoken/auth_url':           value  => hiera('quickstack::params::auth_url');
         'keystone_authtoken/admin_user':         ensure => absent;
         'keystone_authtoken/username':           value  => $auth_user;
@@ -372,7 +374,8 @@ class neutron::server (
         'keystone_authtoken/project_domain_id':  value  => 'default';
         'keystone_authtoken/admin_password':     ensure => absent;
         'keystone_authtoken/password':           value  => $auth_password, secret => true;
-        'nova/auth_plugin':                      value  => 'password';
+        'nova/auth_plugin':                      ensure => absent;
+        'nova/auth_type':                        value  => 'password';
         'nova/auth_url':                         value  => hiera('quickstack::params::auth_url');
         'nova/username':                         value  => 'nova';
         'nova/user_domain_id':                   value  => 'default';

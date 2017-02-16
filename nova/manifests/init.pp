@@ -455,9 +455,10 @@ class nova(
 
   if $image_service == 'nova.image.glance.GlanceImageService' {
     if $glance_api_servers {
-      nova_config { 
-        'glance/api_servers': value => $glance_api_servers;
-        'glance/protocol':    value => $auth_protocol;
+      nova_config {
+        'glance/api_servers': value  => $glance_api_servers;
+#        'glance/protocol':    value => $auth_protocol;
+        'glance/protocol':    ensure => absent;
       }
     }
   }
@@ -479,6 +480,7 @@ class nova(
     $n1 = hiera('ha::node1')
     $n2 = hiera('ha::node2')
     nova_config { 'DEFAULT/memcached_servers': value  => "$n1:11211,$n2:11211" }
+    neutron_config {'keystone_authtoken/memcached_servers' : value  => "$n1:11211,$n2:11211" }
   } else {
     nova_config { 'DEFAULT/memcached_servers': ensure => absent }
   }

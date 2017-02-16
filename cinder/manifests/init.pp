@@ -480,8 +480,10 @@ class cinder (
   # SSL Options
   if $use_ssl {
     cinder_config {
-      'DEFAULT/ssl_cert_file' : value => $cert_file;
-      'DEFAULT/ssl_key_file' :  value => $key_file;
+      'DEFAULT/ssl_cert_file' : ensure => absent;
+      'DEFAULT/ssl_key_file'  : ensure => absent;
+      'ssl/cert_file'         : value  => $cert_file;
+      'ssl/key_file'          : value  => $key_file;
       'keystone_authtoken/auth_uri': value => $auth_uri;
       'keystone_authtoken/identity_uri': value => $identity_uri;
       'keystone_authtoken/cafile': value => $ca_file;
