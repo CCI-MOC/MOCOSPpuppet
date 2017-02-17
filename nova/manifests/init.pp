@@ -472,6 +472,8 @@ class nova(
       'ssl/ca_file':                 value => $ca_file;
       'ssl/cert_file':               value => $cert_file;
       'ssl/key_file':                value => $key_file;
+      'DEFAULT/cert':                value => $cert_file;
+      'DEFAULT/key':                 value => $key_file;
     }
   }
 

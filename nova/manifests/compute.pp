@@ -113,7 +113,7 @@ class nova::compute (
   $vnc_enabled                        = true,
   $vncserver_proxyclient_address      = '127.0.0.1',
   $vncproxy_host                      = false,
-  $vncproxy_protocol                  = 'http',
+  $vncproxy_protocol                  = 'https',
   $vncproxy_port                      = '6080',
   $vncproxy_path                      = '/vnc_auto.html',
   $vnc_keymap                         = 'en-us',
