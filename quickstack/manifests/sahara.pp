@@ -93,10 +93,16 @@ class quickstack::sahara (
     after   => "    def get_versions\u0028self\u0029:"
   }
 
+  if str2bool(hiera('swift_endpoint::real', 'false')) {
+    $swift = "'object-store'"
+  } else {
+    $swift = ""
+  }
+
   file_line { 'swift_dns':
     notify => Service['openstack-sahara-all'], # only restarts if change
     path   => '/usr/lib/python2.7/site-packages/sahara/utils/cluster.py',
-    line   => "    for service in [\"object-store\"]:",
+    line   => "    for service in [${swift}]:",
     match  => "(    for service in).*"
   }
 
@@ -118,6 +124,7 @@ class quickstack::sahara (
   }
 
   file_line { 'pig_note': # Might fail on first Puppet run
+    notify => Service['httpd'], # only restarts if change
     path   => '/usr/lib/python2.7/site-packages/sahara_dashboard/content/data_processing/jobs/templates/job_templates/_create_job_help.html',
     line   => '    <li>{% blocktrans %}Pig - <a href="https://github.com/jeremyfreudberg/sahara-image-elements/wiki/Running-Pig-jobs-on-Vanilla-MOC-Remix-clusters">See Note</a>{% endblocktrans %}</li>',
     match  => '.*(Pig).*'
