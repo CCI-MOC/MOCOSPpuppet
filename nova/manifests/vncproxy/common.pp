@@ -32,7 +32,7 @@ class nova::vncproxy::common (
     $vncproxy_protocol,
     $::nova::compute::vncproxy_protocol,
     $::nova::vncproxy::vncproxy_protocol,
-    'http')
+    'https')
   $vncproxy_port_real     = pick(
     $vncproxy_port,
     $::nova::compute::vncproxy_port,
