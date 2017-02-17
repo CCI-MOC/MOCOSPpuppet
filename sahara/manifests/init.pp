@@ -156,6 +156,7 @@ class sahara(
     ensure => $package_ensure,
     name   => 'openstack-sahara-ui',
     tag    => 'openstack',
+    notify  => Service['httpd'], # only restarts if change
   }
 
   # Because Sahara does not support SQLite, sahara-common will fail to be installed

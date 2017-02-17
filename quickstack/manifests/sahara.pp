@@ -118,6 +118,7 @@ class quickstack::sahara (
   }
 
   file_line { 'pig_note': # Might fail on first Puppet run
+    notify => Service['httpd'], # only restarts if change
     path   => '/usr/lib/python2.7/site-packages/sahara_dashboard/content/data_processing/jobs/templates/job_templates/_create_job_help.html',
     line   => '    <li>{% blocktrans %}Pig - <a href="https://github.com/jeremyfreudberg/sahara-image-elements/wiki/Running-Pig-jobs-on-Vanilla-MOC-Remix-clusters">See Note</a>{% endblocktrans %}</li>',
     match  => '.*(Pig).*'
