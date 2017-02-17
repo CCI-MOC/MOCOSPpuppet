@@ -93,10 +93,16 @@ class quickstack::sahara (
     after   => "    def get_versions\u0028self\u0029:"
   }
 
+  if str2bool(hiera('swift_endpoint::real', 'false')) {
+    $swift = "'object-store'"
+  } else {
+    $swift = ""
+  }
+
   file_line { 'swift_dns':
     notify => Service['openstack-sahara-all'], # only restarts if change
     path   => '/usr/lib/python2.7/site-packages/sahara/utils/cluster.py',
-    line   => "    for service in [\"object-store\"]:",
+    line   => "    for service in [${swift}]:",
     match  => "(    for service in).*"
   }
 
