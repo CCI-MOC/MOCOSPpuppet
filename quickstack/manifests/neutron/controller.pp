@@ -415,7 +415,8 @@ class quickstack::neutron::controller (
 
     neutron_config {
       'DEFAULT/service_plugins':
-        value => join(['neutron.services.l3_router.l3_router_plugin.L3RouterPlugin',]),
+#        value => join(['neutron.services.l3_router.l3_router_plugin.L3RouterPlugin',]),
+        value => join(['router',]),
     }
     ->
     class { '::neutron::plugins::ml2':

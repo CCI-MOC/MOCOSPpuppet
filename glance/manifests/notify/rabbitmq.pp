@@ -100,14 +100,15 @@ class glance::notify::rabbitmq(
   }
 
   glance_api_config {
-    'DEFAULT/notification_driver':          value => $notification_driver;
-    'oslo_messaging_rabbit/rabbit_virtual_host':          value => $rabbit_virtual_host;
-    'oslo_messaging_rabbit/rabbit_password':              value => $rabbit_password, secret => true;
-    'oslo_messaging_rabbit/rabbit_userid':                value => $rabbit_userid;
-    'oslo_messaging_rabbit/rabbit_notification_exchange': value => $rabbit_notification_exchange;
-    'oslo_messaging_rabbit/rabbit_notification_topic':    value => $rabbit_notification_topic;
-    'oslo_messaging_rabbit/rabbit_use_ssl':               value => $rabbit_use_ssl;
-    'oslo_messaging_rabbit/amqp_durable_queues':          value => $amqp_durable_queues_real;
+    'DEFAULT/notification_driver':                        ensure => absent;
+    'oslo_messaging_notifications/driver':                value  => $notification_driver;
+    'oslo_messaging_rabbit/rabbit_virtual_host':          value  => $rabbit_virtual_host;
+    'oslo_messaging_rabbit/rabbit_password':              value  => $rabbit_password, secret => true;
+    'oslo_messaging_rabbit/rabbit_userid':                value  => $rabbit_userid;
+    'oslo_messaging_rabbit/rabbit_notification_exchange': value  => $rabbit_notification_exchange;
+    'oslo_messaging_rabbit/rabbit_notification_topic':    value  => $rabbit_notification_topic;
+    'oslo_messaging_rabbit/rabbit_use_ssl':               value  => $rabbit_use_ssl;
+    'oslo_messaging_rabbit/amqp_durable_queues':          value  => $amqp_durable_queues_real;
   }
 
   if $rabbit_use_ssl {

@@ -147,12 +147,14 @@ class quickstack::neutron::all (
   if ('cisco_n1kv' in $ml2_mechanism_drivers) {
     neutron_config {
       'DEFAULT/service_plugins':
-        value => join(['cisco_n1kv_profile','neutron.services.l3_router.l3_router_plugin.L3RouterPlugin'], ','),
+#        value => join(['cisco_n1kv_profile','neutron.services.l3_router.l3_router_plugin.L3RouterPlugin'], ','),
+        value => join(['cisco_n1kv_profile','router'], ','),
     }
   } else {
     neutron_config {
       'DEFAULT/service_plugins':
-        value => join(['neutron.services.l3_router.l3_router_plugin.L3RouterPlugin',]),
+#        value => join(['neutron.services.l3_router.l3_router_plugin.L3RouterPlugin',]),
+        value => join(['router',]),
     }
   }
 

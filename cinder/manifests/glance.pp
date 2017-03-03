@@ -63,15 +63,15 @@ class cinder::glance (
   $glance_request_timeout     = undef
 ) {
 
-  if is_array($glance_api_servers) {
-    cinder_config {
-      'DEFAULT/glance_api_servers': value => join($glance_api_servers, ',');
-    }
-  } elsif is_string($glance_api_servers) {
-    cinder_config {
-      'DEFAULT/glance_api_servers': value => $glance_api_servers;
-    }
-  }
+#  if is_array($glance_api_servers) {
+#    cinder_config {
+#      'DEFAULT/glance_api_servers': value => join($glance_api_servers, ',');
+#    }
+#  } elsif is_string($glance_api_servers) {
+#    cinder_config {
+#      'DEFAULT/glance_api_servers': value => $glance_api_servers;
+#    }
+#  }
 
   cinder_config {
     'DEFAULT/glance_api_version':         value => $glance_api_version;
