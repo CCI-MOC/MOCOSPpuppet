@@ -93,6 +93,13 @@ class quickstack::sahara (
     after   => "    def get_versions\u0028self\u0029:"
   }
 
+  file_line { 'storm_cleanup':
+    notify  => Service['openstack-sahara-all'], # only restarts Sahara if a file changes
+    path    => '/usr/lib/python2.7/site-packages/sahara/plugins/storm/plugin.py',
+    line    => '        return ["1.0.1", "0.9.2"]',
+    after   => "    def get_versions\u0028self\u0029:"
+  }
+
   if str2bool(hiera('swift_endpoint::real', 'false')) {
     $swift = "'object-store'"
   } else {
@@ -100,6 +107,7 @@ class quickstack::sahara (
   }
 
   file_line { 'swift_dns':
+    # this fix is no longer necessary on Newton, but keeping it won't break anything
     notify => Service['openstack-sahara-all'], # only restarts if change
     path   => '/usr/lib/python2.7/site-packages/sahara/utils/cluster.py',
     line   => "    for service in [${swift}]:",
