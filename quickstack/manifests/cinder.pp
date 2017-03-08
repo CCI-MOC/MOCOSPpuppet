@@ -50,7 +50,8 @@ class quickstack::cinder(
   }
 
   cinder_config {
-    'DEFAULT/glance_host': value => $glance_host;
+    'DEFAULT/glance_host':          ensure => absent;
+    'DEFAULT/glance_api_servers':   value  => "${glance_host}:9292";
     'DEFAULT/osapi_volume_use_ssl': value  => True ;
     'DEFAULT/notification_driver':  ensure => absent;
     'oslo_messaging_notifications/driver':  value  => 'cinder.openstack.common.notifier.rpc_notifier';

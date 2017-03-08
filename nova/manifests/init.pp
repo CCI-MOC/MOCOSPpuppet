@@ -481,8 +481,12 @@ class nova(
   if hiera('moc::clusterdeployment') == 'true' {
     $n1 = hiera('ha::node1')
     $n2 = hiera('ha::node2')
-    nova_config { 'DEFAULT/memcached_servers': value  => "$n1:11211,$n2:11211" }
-    neutron_config {'keystone_authtoken/memcached_servers' : value  => "$n1:11211,$n2:11211" }
+    nova_config { 'DEFAULT/memcached_servers':               ensure => absent }
+    nova_config { 'cache/memcache_servers':                  value  => "$n1:11211,$n2:11211" }
+    nova_config { 'cache/enabled':                           value  => 'true' }
+    nova_config { 'cache/backend':                           value  => 'oslo_cache.memcache_pool' }
+    nova_config { 'keystone_authtoken/memcached_servers':    value  => "$n1:11211,$n2:11211" }
+    neutron_config {'keystone_authtoken/memcached_servers':  value  => "$n1:11211,$n2:11211" }
   } else {
     nova_config { 'DEFAULT/memcached_servers': ensure => absent }
   }
@@ -495,8 +499,12 @@ class nova(
       'oslo_messaging_rabbit/rabbit_password':     value => $rabbit_password, secret => true;
       'oslo_messaging_rabbit/rabbit_userid':       value => $rabbit_userid;
       'oslo_messaging_rabbit/rabbit_virtual_host': value => $rabbit_virtual_host;
+#      'oslo_messaging_rabbit/rabbit_password':     ensure => absent;
+#      'oslo_messaging_rabbit/rabbit_userid':       ensure => absent;
+#      'oslo_messaging_rabbit/rabbit_virtual_host': ensure => absent;
       'oslo_messaging_rabbit/rabbit_use_ssl':      value => $rabbit_use_ssl;
       'oslo_messaging_rabbit/amqp_durable_queues': value => $amqp_durable_queues;
+      'DEFAULT/transport_url':                     value => "rabbit://${rabbit_userid}:${$rabbit_password}@${rabbit_host}:${rabbit_port}${rabbit_virtual_host}";
     }
 
     if $rabbit_use_ssl {
@@ -540,6 +548,9 @@ class nova(
       nova_config { 'oslo_messaging_rabbit/rabbit_host':      value => $rabbit_host }
       nova_config { 'oslo_messaging_rabbit/rabbit_port':      value => $rabbit_port }
       nova_config { 'oslo_messaging_rabbit/rabbit_hosts':     value => "${rabbit_host}:${rabbit_port}" }
+#      nova_config { 'oslo_messaging_rabbit/rabbit_host':      ensure => absent }
+#      nova_config { 'oslo_messaging_rabbit/rabbit_port':      ensure => absent }
+#      nova_config { 'oslo_messaging_rabbit/rabbit_hosts':     ensure => absent }
     }
     if $rabbit_ha_queues == undef {
       if $rabbit_hosts {
@@ -584,9 +595,11 @@ class nova(
   # SSL Options
   if $use_ssl {
     nova_config {
-      'DEFAULT/enabled_ssl_apis' : value => join($enabled_ssl_apis, ',');
-      'DEFAULT/ssl_cert_file' :    value => $cert_file;
-      'DEFAULT/ssl_key_file' :     value => $key_file;
+      'DEFAULT/enabled_ssl_apis' : value  => join($enabled_ssl_apis, ',');
+      'DEFAULT/ssl_cert_file' :    ensure => absent;
+      'DEFAULT/ssl_key_file' :     value  => absent;
+      'wsgi/ssl_cert_file' :       value  => $cert_file;
+      'wsgi/ssl_key_file' :        value  => $key_file;
     }
 
     # Making the condition explicitly false.

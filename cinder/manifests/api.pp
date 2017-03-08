@@ -138,7 +138,7 @@ class cinder::api (
   $enabled                    = true,
   $manage_service             = true,
   $ratelimits                 = undef,
-  $default_volume_type        = false,
+  $default_volume_type        = 'Ceph',
   $ratelimits_factory =
     'cinder.api.v1.limits:RateLimitingMiddleware.factory',
   $validate                   = false,
@@ -368,5 +368,9 @@ class cinder::api (
 
   cinder_api_paste_ini {
     'filter:sizelimit/paste.filter_factory': value => 'oslo_middleware.sizelimit:RequestBodySizeLimiter.factory';
+  }
+  exec { 'create ceph volume type':
+    command     => "/bin/bash -c 'source /root/keystonerc_admin && /usr/bin/openstack volume type list | /usr/bin/grep Ceph || /usr/bin/openstack volume type create Ceph'",
+    require     => Service['cinder-api'],
   }
 }

@@ -581,3 +581,10 @@ DEPLOYMENT_MODE = "<%= @tuskar_ui_deployment_mode %>"
 <% end %>
 
 SAHARA_AUTO_IP_ALLOCATION_ENABLED=True
+REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES',
+                                'LAUNCH_INSTANCE_DEFAULTS',
+                                'OPENSTACK_IMAGE_FORMATS']
+
+IMAGES_ALLOW_LOCATION = True
+HORIZON_IMAGES_UPLOAD_MODE = 'legacy'
+

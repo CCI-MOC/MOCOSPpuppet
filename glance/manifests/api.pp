@@ -303,15 +303,16 @@ class glance::api(
 
   # basic service config
   glance_api_config {
-    'DEFAULT/verbose':               value => $verbose;
-    'DEFAULT/debug':                 value => $debug;
-    'DEFAULT/bind_host':             value => $bind_host;
-    'DEFAULT/bind_port':             value => $bind_port;
-    'DEFAULT/backlog':               value => $backlog;
-    'DEFAULT/workers':               value => $workers;
-    'DEFAULT/show_image_direct_url': value => $show_image_direct_url;
-    'DEFAULT/image_cache_dir':       value => $image_cache_dir;
-    'glance_store/os_region_name':   value => $os_region_name;
+    'DEFAULT/verbose':                 value => $verbose;
+    'DEFAULT/debug':                   value => $debug;
+    'DEFAULT/bind_host':               value => $bind_host;
+    'DEFAULT/bind_port':               value => $bind_port;
+    'DEFAULT/backlog':                 value => $backlog;
+    'DEFAULT/workers':                 value => $workers;
+    'DEFAULT/show_image_direct_url':   value => $show_image_direct_url;
+    'DEFAULT/image_cache_dir':         value => $image_cache_dir;
+    'DEFAULT/show_multiple_locations': value => 'true';
+    'glance_store/os_region_name':     value => $os_region_name;
   }
 
   # known_stores config

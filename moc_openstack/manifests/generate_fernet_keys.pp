@@ -6,7 +6,7 @@ class moc_openstack::generate_fernet_keys {
     path  => '/etc/keystone/fernet-keys', 
     owner => 'keystone',
     group => 'keystone',
-    mode  => '0744',
+    mode  => '0750',
   }
 
   # If the directory is empty, runs fernet key generation
