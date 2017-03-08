@@ -60,7 +60,7 @@ host-mode: auto
 # Preallocated size for packet. Default is 1514 which is the classical
 # size for pcap on ethernet. You should adjust this value to the highest
 # packet size (MTU + hardware header) on your system.
-#default-packet-size: 1514
+default-packet-size: 9014
 
 # The default logging directory.  Any log or output file will be
 # placed here if its not specified with a full path name.  This can be
