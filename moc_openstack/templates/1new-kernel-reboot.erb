@@ -8,9 +8,9 @@ clusterdeployment=<%= scope.function_hiera(['moc::clusterdeployment']) %>
 if [ "$role" == "control" ]; then
   if [ "$clusterdeployment" == "true" ];then
     pcs status cluster|grep Offline > /dev/null && echo 'Cluster node(s) are offline' | mail -s "Controller $hst" alerts && exit
-    [ "`rpm -q kernel|tail -n 1|cut -d l -f 2`" != "-`uname -r|cut -d l -f 1`" ] && service mariadb stop && sync && reboot -f
+    [ "`rpm -q kernel|tail -n 1|cut -d l -f 2`" != "-`uname -r|cut -d l -f 1`" ] && iptables-save > /dev/null && service mariadb stop && sync && reboot -f
   else
-    [ "`rpm -q kernel|tail -n 1|cut -d l -f 2`" != "-`uname -r|cut -d l -f 1`" ] && service mariadb stop && sync && reboot -f
+    [ "`rpm -q kernel|tail -n 1|cut -d l -f 2`" != "-`uname -r|cut -d l -f 1`" ] && iptables-save > /dev/null && service mariadb stop && sync && reboot -f
   fi
 fi
 
