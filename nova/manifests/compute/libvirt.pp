@@ -104,7 +104,7 @@ class nova::compute::libvirt (
   if hiera('nova::compute::libvirt::libvirt_cpu_mode') == 'default' {
     case $libvirt_virt_type {
       'kvm','qemu': {
-        $libvirt_cpu_mode_real = 'host-model'
+        $libvirt_cpu_mode_real = 'host-passthrough'
       }
       default: {
         $libvirt_cpu_mode_real = 'none'
