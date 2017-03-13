@@ -224,7 +224,7 @@ class horizon(
   $available_regions                   = undef,
   $api_result_limit                    = 1000,
   $log_level                           = 'INFO',
-  $help_url                            = 'https://access.redhat.com/documentation/en-US/Red_Hat_Enterprise_Linux_OpenStack_Platform/7/index.html',
+  $help_url                            = 'https://info.massopencloud.org/blog/wiki/kaizenfaqs',
   $local_settings_template             = 'horizon/local_settings.py.erb',
   $configure_apache                    = true,
   $bind_address                        = undef,
