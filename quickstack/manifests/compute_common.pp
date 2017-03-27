@@ -560,7 +560,7 @@ if hiera('moc::dobackups') == 'true' {
     require => Package['nova-common'],
   }
 
-package { 'qemu-kvm-common-rhev':
+package { 'qemu-kvm-common':
   ensure => present,
   } ->
    service { 'ksm':

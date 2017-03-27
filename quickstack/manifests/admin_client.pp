@@ -11,14 +11,14 @@ class quickstack::admin_client(
   }
 
   
-  $clientdeps = ["python-iso8601"]
-  $clientlibs = [ "python-novaclient", 
-                  "python-keystoneclient", 
-                  "python-glanceclient", 
-                  "python-cinderclient", 
-                  "python-neutronclient", 
-                  "python-swiftclient", 
-                  "python-heatclient" ]
+  $clientdeps = ["python2-iso8601"]
+  $clientlibs = [ "python2-novaclient", 
+                  "python2-keystoneclient", 
+                  "python2-glanceclient", 
+                  "python2-cinderclient", 
+                  "python2-neutronclient", 
+                  "python2-swiftclient", 
+                  "python2-heatclient" ]
 
   openstack_client_pkgs { $clientdeps: }
   openstack_client_pkgs { $clientlibs: }

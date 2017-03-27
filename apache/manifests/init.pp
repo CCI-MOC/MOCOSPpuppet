@@ -165,6 +165,14 @@ class apache (
     purge   => $purge_confd,
     notify  => Class['Apache::Service'],
     require => Package['httpd'],
+  } ->
+  file  { '/etc/httpd/conf.d/wsgi-nova-placement.conf':
+    notify  => Service['httpd'],
+    mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    require => Package['httpd'],
+    source => 'puppet:///modules/apache/wsgi-nova-placement.conf',
   }
 
   if ! defined(File[$mod_dir]) {

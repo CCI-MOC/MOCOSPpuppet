@@ -31,26 +31,27 @@ class moc_openstack::cronjob (
   }
 
   # backup the original redhat.repo before puppet run
-  exec {'backup_redhat_repo':
-    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
-    command => "/bin/cp ${base_dir}redhat.repo ${base_dir}redhat.repo.default",
-  } ->
-  exec {'disable_redhat_repos':
-    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
-    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}redhat.repo",
-  } ->
-  exec {'disable_epel_repos':
-    onlyif  => "/bin/test -f ${base_dir}epel.repo",
-    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel.repo",
-  } ->
-  exec {'disable_epel_testing_repos':
-    onlyif  => "/bin/test -f ${base_dir}epel-testing.repo",
-    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel-testing.repo",
-  } ->
+#  exec {'backup_redhat_repo':
+#    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
+#    command => "/bin/cp ${base_dir}redhat.repo ${base_dir}redhat.repo.default",
+#  } ->
+#  exec {'disable_redhat_repos':
+#    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
+#    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}redhat.repo",
+#  } ->
+#  exec {'disable_epel_repos':
+#    onlyif  => "/bin/test -f ${base_dir}epel.repo",
+#    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel.repo",
+#  } ->
+#  exec {'disable_epel_testing_repos':
+#    onlyif  => "/bin/test -f ${base_dir}epel-testing.repo",
+#    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel-testing.repo",
+#  } ->
+
   # update repos if something has changed. -N checks if the file's
   # timestamp has changed. If yes, it downloads it. 
   exec {'update_rhel7_file':
-    command => "/bin/wget -q -N $rhel7_link -P ${base_dir}",
+    command => "/usr/bin/grep -i centos /etc/redhat-release || /bin/wget -q -N $rhel7_link -P ${base_dir}",
   } ->
   exec {'update_epel_file':
     command => "/bin/wget -q -N $epel_link -P ${base_dir}",

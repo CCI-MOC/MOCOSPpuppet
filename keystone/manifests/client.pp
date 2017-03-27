@@ -12,7 +12,7 @@ class keystone::client (
   $ensure = 'present'
 ) {
 
-  package { 'python-keystoneclient':
+  package { 'python2-keystoneclient':
     ensure => $ensure,
     tag    => 'openstack',
   }

@@ -857,6 +857,9 @@ class quickstack::controller_common (
   package { "yum-utils":
     ensure => latest,
   }
+  package { "openstack-utils":
+    ensure => latest,
+  }
 #This belongs to a separate manifest and only needs to be declared here
 #Customization for isntalling sensu
 if hiera('moc::usesensu') == 'true' {
