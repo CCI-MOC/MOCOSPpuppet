@@ -225,14 +225,14 @@ class nova::api(
     'DEFAULT/metadata_workers':      value  => $metadata_workers;
     'DEFAULT/use_forwarded_for':     value  => $use_forwarded_for;
     'osapi_v3/enabled':              value  => $osapi_v3;
-    'placement/auth_url'             value  => $identity_uri;
-    'placement/auth_type'            value  => 'password';
-    'placement/username'             value  => 'placement';
-    'placement/password'             value  => $admin_password, secret => true;
-    'placement/user_domain_name'     value  => 'default';
-    'placement/project_name'         value  => 'services';
-    'placement/project_domain_name'  value  => 'default';
-    'placement/os_region_name'       value  => hiera('openstack::keystone::region');;
+    'placement/auth_url':            value  => $identity_uri;
+    'placement/auth_type':           value  => 'password';
+    'placement/username':            value  => 'placement';
+    'placement/password':            value  => $admin_password, secret => true;
+    'placement/user_domain_name':    value  => 'default';
+    'placement/project_name':        value  => 'services';
+    'placement/project_domain_name': value  => 'default';
+    'placement/os_region_name':      value  => hiera('openstack::keystone::region');
   }
 
   if ($neutron_metadata_proxy_shared_secret){
