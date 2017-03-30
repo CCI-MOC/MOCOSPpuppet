@@ -370,6 +370,7 @@ class nova::api(
       path        => '/usr/bin/',
       refreshonly => true,
       subscribe   => Exec['post-nova_config'],
+      onlyif  => "/bin/test -f /root/.my.cnf",
     }
   }
   file { 'nova-placement':
@@ -379,8 +380,12 @@ class nova::api(
     owner => 'root',
     group => 'root',
     mode  => '0755',
-  }
-
+  } ->
+    exec { 'create-plscement-service':
+      command     => '/tmp/nova-placement',
+      path        => '/usr/bin/',
+      onlyif  => "/bin/test -f /root/.my.cnf",
+    }
 
   # Remove auth configuration from api-paste.ini
   nova_paste_api_ini {
