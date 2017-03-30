@@ -28,7 +28,7 @@ class quickstack::neutron::all (
   $ml2_security_group            = 'True',
   $mysql_ca                      = undef,
   $mysql_host                    = '127.0.0.1',
-  $neutron_core_plugin           = 'neutron.plugins.ml2.plugin.Ml2Plugin',
+  $neutron_core_plugin           = 'ml2',
   $neutron_db_password,
   $neutron_metadata_proxy_secret,
   $neutron_priv_host             = '127.0.0.1',
@@ -178,7 +178,7 @@ class quickstack::neutron::all (
   ->
   anchor {'quickstack-neutron-server-last':}
 
-  if $neutron_core_plugin == 'neutron.plugins.ml2.plugin.Ml2Plugin' {
+  if $neutron_core_plugin == 'ml2' {
 
     class { '::neutron::plugins::ml2':
       type_drivers          => $ml2_type_drivers,

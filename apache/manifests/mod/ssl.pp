@@ -73,4 +73,13 @@ class apache::mod::ssl (
     before  => File[$::apache::mod_dir],
     notify  => Class['apache::service'],
   }
+
+  file { '/etc/httpd/conf.d/wsgi-keystone.conf':
+    ensure  => file,
+    path    => "${::apache::mod_dir}/wsgi-keystone.conf",
+    source => 'puppet:///modules/keystone/wsgi-keystone.conf',
+    require => Exec["mkdir ${::apache::mod_dir}"],
+    before  => File[$::apache::mod_dir],
+    notify  => Class['apache::service'],
+  }
 }

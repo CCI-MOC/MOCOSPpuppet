@@ -39,7 +39,7 @@ class nova::db (
 ) {
 
   $database_connection_real = pick($database_connection, $::nova::database_connection, false)
-  $database_connection_real_api = hiera('nova_api::database_connection')
+  $database_connection_real_api = "${database_connection_real}_api"
   $slave_connection_real = pick($slave_connection, $::nova::slave_connection, false)
   $database_idle_timeout_real = pick($database_idle_timeout, $::nova::database_idle_timeout, false)
 

@@ -516,7 +516,7 @@ class heat(
       Heat_config['database/connection'] ~> Exec['heat-dbsync']
 
       exec { 'heat-dbsync':
-        command     => $::heat::params::dbsync_command,
+        command     => 'heat-manage db_sync',
         path        => '/usr/bin',
         user        => 'heat',
         refreshonly => true,

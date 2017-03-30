@@ -14,7 +14,7 @@ class heat::params {
       $api_cloudwatch_package_name = 'openstack-heat-api-cloudwatch'
       $api_cfn_package_name = 'openstack-heat-api-cfn'
       $engine_package_name = 'openstack-heat-engine'
-      $client_package_name = 'python2-heatclient'
+      if $operatingsystem== 'CentOS' {$client_package_name = 'python2-heatclient'} else {$client_package_name = 'python-heatclient'}
       $common_package_name = 'openstack-heat-common'
       # service names
       $api_service_name = 'openstack-heat-api'

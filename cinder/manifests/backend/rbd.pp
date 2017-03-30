@@ -59,17 +59,26 @@ define cinder::backend::rbd (
   include ::cinder::params
 
   cinder_config {
-    "${name}/volume_backend_name":              value => $volume_backend_name;
-    "${name}/volume_driver":                    value => 'cinder.volume.drivers.rbd.RBDDriver';
-    "${name}/rbd_ceph_conf":                    value => $rbd_ceph_conf;
-    "${name}/rbd_user":                         value => $rbd_user;
-    "${name}/rbd_pool":                         value => $rbd_pool;
-    "${name}/rbd_max_clone_depth":              value => $rbd_max_clone_depth;
-    "${name}/rbd_flatten_volume_from_snapshot": value => $rbd_flatten_volume_from_snapshot;
+    "${name}/volume_backend_name":              ensure => absent;
+    "${name}/volume_driver":                    ensure => absent;
+    "${name}/rbd_ceph_conf":                    ensure => absent;
+    "${name}/rbd_user":                         ensure => absent;
+    "${name}/rbd_pool":                         ensure => absent;
+    "${name}/rbd_max_clone_depth":              ensure => absent;
+    "${name}/rbd_flatten_volume_from_snapshot": ensure => absent;
+
+    "rbd/volume_backend_name":                  value => $volume_backend_name;
+    "rbd/volume_driver":                        value => 'cinder.volume.drivers.rbd.RBDDriver';
+    "rbd/rbd_ceph_conf":                        value => $rbd_ceph_conf;
+    "rbd/rbd_user":                             value => $rbd_user;
+    "rbd/rbd_pool":                             value => $rbd_pool;
+    "rbd/rbd_max_clone_depth":                  value => $rbd_max_clone_depth;
+    "rbd/rbd_flatten_volume_from_snapshot":     value => $rbd_flatten_volume_from_snapshot;
   }
 
   if $rbd_secret_uuid {
-    cinder_config {"${name}/rbd_secret_uuid": value => $rbd_secret_uuid;}
+    cinder_config {"${name}/rbd_secret_uuid": ensure => absent;}
+    cinder_config {"rbd/rbd_secret_uuid":     value  => $rbd_secret_uuid;}
   } else {
     cinder_config {"${name}/rbd_secret_uuid": ensure => absent;}
   }

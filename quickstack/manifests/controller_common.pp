@@ -860,6 +860,16 @@ class quickstack::controller_common (
   package { "openstack-utils":
     ensure => latest,
   }
+
+  package { "openstack-nova-placement-api":
+    ensure => latest,
+  }
+
+#  if $operatingsystem== 'CentOS' {
+#    package {"centos-release-openstack-ocata":
+#      ensure => latest,
+#    }
+#  }
 #This belongs to a separate manifest and only needs to be declared here
 #Customization for isntalling sensu
 if hiera('moc::usesensu') == 'true' {

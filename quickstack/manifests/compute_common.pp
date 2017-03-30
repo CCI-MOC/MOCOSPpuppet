@@ -431,6 +431,18 @@ class quickstack::compute_common (
     ensure => latest,
   }
 
+  package { "openstack-nova-placement-api":
+    ensure => latest,
+  }
+
+#  if $operatingsystem== 'CentOS' {
+#      package {"centos-release-openstack-ocata":
+#        ensure => latest,
+#      }
+#  }
+
+
+
 #This belongs in a separate manifest and needs to be declared here not defined
 #Customization for configuring sensu
 if hiera('moc::usesensu') == 'true' {

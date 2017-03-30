@@ -363,25 +363,28 @@ class neutron::server (
     } else {
 
       neutron_config {
-        'keystone_authtoken/admin_tenant_name':  ensure => absent;
-        'keystone_authtoken/auth_plugin':        ensure => absent;
-        'keystone_authtoken/auth_type':          value  => 'password';
-        'keystone_authtoken/auth_url':           value  => hiera('quickstack::params::auth_url');
-        'keystone_authtoken/admin_user':         ensure => absent;
-        'keystone_authtoken/username':           value  => $auth_user;
-        'keystone_authtoken/project_name':       value  => 'services';
-        'keystone_authtoken/user_domain_id':     value  => 'default';
-        'keystone_authtoken/project_domain_id':  value  => 'default';
-        'keystone_authtoken/admin_password':     ensure => absent;
-        'keystone_authtoken/password':           value  => $auth_password, secret => true;
-        'nova/auth_plugin':                      ensure => absent;
-        'nova/auth_type':                        value  => 'password';
-        'nova/auth_url':                         value  => hiera('quickstack::params::auth_url');
-        'nova/username':                         value  => 'nova';
-        'nova/user_domain_id':                   value  => 'default';
-        'nova/password':                         value  => hiera('quickstack::params::nova_user_password');
-        'nova/project_name':                     value  => 'services';
-        'nova/project_domain_id':                value  => 'default';
+        'keystone_authtoken/admin_tenant_name':    ensure => absent;
+        'keystone_authtoken/auth_plugin':          ensure => absent;
+        'keystone_authtoken/auth_type':            value  => 'password';
+        'keystone_authtoken/auth_url':             value  => hiera('quickstack::params::identity_uri');
+        'keystone_authtoken/auth_uri':             value  => hiera('quickstack::params::auth_uri');
+        'keystone_authtoken/admin_user':           ensure => absent;
+        'keystone_authtoken/username':             value  => $auth_user;
+        'keystone_authtoken/project_name':         value  => 'services';
+        'keystone_authtoken/user_domain_id':       ensure => absent;
+        'keystone_authtoken/project_domain_id':    ensure => absent;
+        'keystone_authtoken/user_domain_name':     value  => 'default';
+        'keystone_authtoken/project_domain_name':  value  => 'default';
+        'keystone_authtoken/admin_password':       ensure => absent;
+        'keystone_authtoken/password':             value  => $auth_password, secret => true;
+        'nova/auth_plugin':                        ensure => absent;
+        'nova/auth_type':                          value  => 'password';
+        'nova/auth_url':                           value  => hiera('quickstack::params::auth_url');
+        'nova/username':                           value  => 'nova';
+        'nova/user_domain_id':                     value  => 'default';
+        'nova/password':                           value  => hiera('quickstack::params::nova_user_password');
+        'nova/project_name':                       value  => 'services';
+        'nova/project_domain_id':                  value  => 'default';
       }
 
       neutron_api_config {
@@ -476,15 +479,15 @@ class neutron::server (
         }
       }
 
-      if $auth_uri {
-        $auth_uri_real = $auth_uri
-      } elsif $auth_host and $auth_protocol and $auth_port {
-        $auth_uri_real = "${auth_protocol}://${auth_host}:5000/"
-      }
-
-      neutron_config {
-        'keystone_authtoken/auth_uri': ensure => absent;
-      }
+#      if $auth_uri {
+#        $auth_uri_real = $auth_uri
+#      } elsif $auth_host and $auth_protocol and $auth_port {
+#        $auth_uri_real = "${auth_protocol}://${auth_host}:5000/"
+#      }
+#
+#      neutron_config {
+#        'keystone_authtoken/auth_uri': ensure => absent;
+#      }
       neutron_api_config {
         'filter:authtoken/auth_uri': value => $auth_uri_real;
       }

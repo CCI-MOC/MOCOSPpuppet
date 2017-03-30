@@ -14,9 +14,18 @@ class cinder::client(
 
   include ::cinder::params
 
-  package { 'python2-cinderclient':
-    ensure => $package_ensure,
-    name   => $::cinder::params::client_package,
-    tag    => 'openstack',
+  if $operatingsystem== 'CentOS' {
+    package { 'python2-cinderclient':
+      ensure => $package_ensure,
+      name   => $::cinder::params::client_package,
+      tag    => 'openstack',
+    }
+  }
+  if $operatingsystem== 'RedHat' {
+    package { 'python-cinderclient':
+      ensure => $package_ensure,
+      name   => $::cinder::params::client_package,
+      tag    => 'openstack',
+    }
   }
 }
