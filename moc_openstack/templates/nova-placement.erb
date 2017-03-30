@@ -11,5 +11,5 @@ if [ "$?" != "0"  ]; then
   openstack user create --password $pass $user
   openstack role add --project services --user $user admin
   openstack service create --name placement --description "OpenStack Placement" $user
-  openstack endpoint create --region MOC_Engage1-test placement --publicurl $svcurl:8778 --adminurl $svcurl:8778 --internalurl $svcurl:8778
+  openstack endpoint create --region $region placement --publicurl $svcurl:8778 --adminurl $svcurl:8778 --internalurl $svcurl:8778
 fi
