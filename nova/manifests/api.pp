@@ -380,7 +380,7 @@ class nova::api(
     owner => 'root',
     group => 'root',
     mode  => '0755',
-  } ->
+  }
     exec { 'create-plscement-service':
       command     => '/tmp/nova-placement',
       path        => '/usr/bin/',
