@@ -865,11 +865,11 @@ class quickstack::controller_common (
     ensure => latest,
   }
 
-#  if $operatingsystem== 'CentOS' {
-#    package {"centos-release-openstack-ocata":
-#      ensure => latest,
-#    }
-#  }
+  if (($operatingsystem == 'CentOS') and hiera('moc::clusterdeployment') == 'true'){
+    package {"mariadb-galera-common":
+      ensure => latest,
+    }
+  }
 #This belongs to a separate manifest and only needs to be declared here
 #Customization for isntalling sensu
 if hiera('moc::usesensu') == 'true' {
