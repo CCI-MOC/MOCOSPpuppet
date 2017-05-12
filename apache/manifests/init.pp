@@ -166,7 +166,7 @@ class apache (
     notify  => Class['Apache::Service'],
     require => Package['httpd'],
   } ->
-  file  { '/etc/httpd/conf.d/wsgi-nova-placement.conf':
+  file  { '/etc/httpd/conf.d/00-nova-placement-api.conf':
     notify  => Service['httpd'],
     mode    => '0644',
     owner   => 'root',
