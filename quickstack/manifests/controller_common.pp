@@ -769,29 +769,6 @@ class quickstack::controller_common (
     action => 'accept',
   }
 
-#  firewall { '001 controller incoming pt2':
-#    proto    => 'tcp',
-#    dport    => ['8000', '8003', '8004','6789'],
-#    action   => 'accept',
-#  }
-
-#  if $ssl {
-#    if str2bool_i("$horizon_ssl") {
-#      firewall { '002 horizon incoming':
-#        proto  => 'tcp',
-#        dport  => ['443',],
-#        action => 'accept',
-#      }
-#    }
-
-    if str2bool_i("$amqp_ssl") {
-      firewall { '003 amqp incoming':
-        proto    => 'tcp',
-        dport    => ['5671',],
-        action   => 'accept',
-      }
-    }
-  }
 
   if ($::selinux != "false"){
     selboolean { 'httpd_can_network_connect':
