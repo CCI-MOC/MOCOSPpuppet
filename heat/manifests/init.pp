@@ -430,7 +430,8 @@ class heat(
   }
 
   if $auth_uri {
-    heat_config { 'keystone_authtoken/auth_uri': value => $auth_uri; }
+    heat_config { 'keystone_authtoken/auth_uri': value => $auth_uri;
+                  'keystone_authtoken/auth_url': value => $auth_uri; }
   } else {
     heat_config { 'keystone_authtoken/auth_uri': value => "${keystone_protocol}://${keystone_host}:5000/v2.0"; }
   }
@@ -438,6 +439,7 @@ class heat(
   if $identity_uri {
     heat_config {
       'keystone_authtoken/identity_uri': value => $identity_uri;
+      'clients_keystone/auth_uri': value => $identity_uri;
     }
   } else {
     heat_config {
@@ -569,6 +571,6 @@ class heat(
     validate_bool($enable_stack_abandon)
     heat_config { 'DEFAULT/enable_stack_abandon': value => $enable_stack_abandon; }
   } else {
-    heat_config { 'DEFAULT/enable_stack_abandon': ensure => absent; }
+    heat_config { 'DEFAULT/enable_stack_abandon': value => true; }
   }
 }
