@@ -4,7 +4,7 @@ class quickstack::sahara (
   $sahara_debug          = $quickstack::params::sahara_debug,
   $heat_domain_password  = $quickstack::params::heat_domain_password,
   $sahara_plugins        = $quickstack::params::sahara_plugins,
-  $keystone_auth_uri     = "${quickstack::params::auth_uri}v2.0/",
+  $keystone_auth_uri     = "${quickstack::params::auth_uri}/v2.0/",
   $keystone_identity_uri = $quickstack::params::identity_uri,
   $keystone_tenant_name  = 'services',
   $keystone_region_name  = $openstack::keystone::region,
