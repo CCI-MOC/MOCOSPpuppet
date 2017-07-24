@@ -14,5 +14,5 @@ echo "BOOTPROTO=static" >> $FILE
 echo "VLAN=yes" >> $FILE
 echo "IPADDR=$HOST_IP" >> $FILE
 echo "NETMASK=<%= pub_netmask %>" >> $FILE
-echo "NOZEROCONF=yes" >> $FILE
+echo "MTU=1500" >> $FILE
 echo "DEFROUTE=no" >> $FILE
