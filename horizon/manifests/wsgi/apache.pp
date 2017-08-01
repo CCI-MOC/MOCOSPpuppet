@@ -215,6 +215,7 @@ class horizon::wsgi::apache (
     wsgi_process_group   => 'horizon-ssl',
     redirectmatch_regexp => '^/$',
     redirectmatch_dest   => $::horizon::params::root_url,
+    wsgi_application_group      => '%{GLOBAL}',
   }))
 
 }
