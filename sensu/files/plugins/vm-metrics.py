@@ -7,7 +7,7 @@ import datetime
 command = "virsh list"
 
 remote_output = subprocess.check_output(command.split(), stderr=subprocess.STDOUT)
-output = "\n".join(remote_output.split("\n")[2:])  #remove the top two lines from the output
+output = "".join(remote_output.split("\n")[2:])  #remove the top two lines from the output
 
 total_vcpu = 0
 
