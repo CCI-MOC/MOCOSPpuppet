@@ -7,6 +7,8 @@ import datetime
 command = "virsh list"
 
 remote_output = subprocess.check_output(command.split(), stderr=subprocess.STDOUT)
+
+#print remote_output
 output = "\n".join(remote_output.split("\n")[2:-1])  #remove the top two lines from the output
 
 total_vcpu = 0
@@ -21,7 +23,11 @@ for line in output.splitlines():
     root = ET.fromstring(dumpxml_output)
     
     try:
-       vcpu = int(root.find('vcpu').text)
+       if(root.find('vcpu').attrib.has_key('current')):
+            vcpu = int(root.find('vcpu').attrib.get('current'))
+       else:
+            vcpu = int(root.find('vcpu').text)
+      
        total_vcpu = total_vcpu + vcpu    
     except:
        print "Cant find vcpu for : "+ str(instance_name)
