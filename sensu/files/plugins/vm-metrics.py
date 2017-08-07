@@ -39,6 +39,6 @@ now_epoch = int(now.strftime("%s"))
 # Convert the time stamp to nano seconds.
 now_epoch = now_epoch*1000000000
 
-FORMATTER = "vCPU_metrics,metric={}, Category={},value={},timedelta_sec=60 {} \n"
+FORMATTER = "vCPU_metrics,metric={}, Category={},value={},time= {} \n"
 print FORMATTER.format("vCPU","Usage",total_vcpu,now_epoch)
 
