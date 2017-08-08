@@ -4,7 +4,7 @@ import subprocess
 import xml.etree.ElementTree as ET
 import datetime
 
-command = "virsh list"
+command = "sudo virsh list"
 
 remote_output = subprocess.check_output(command.split(), stderr=subprocess.STDOUT)
 
@@ -17,7 +17,7 @@ for line in output.splitlines():
     instance_name = line.split()[1]  # extract the instance name
     
     #
-    command_dumpxml = "virsh dumpxml "+str(instance_name)
+    command_dumpxml = "sudo virsh dumpxml "+str(instance_name)
     
     dumpxml_output = subprocess.check_output(command_dumpxml.split(), stderr=subprocess.STDOUT)
     root = ET.fromstring(dumpxml_output)
