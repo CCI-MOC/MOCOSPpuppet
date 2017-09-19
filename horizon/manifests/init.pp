@@ -224,7 +224,7 @@ class horizon(
   $available_regions                   = undef,
   $api_result_limit                    = 1000,
   $log_level                           = 'INFO',
-  $help_url                            = 'https://info.massopencloud.org/blog/wiki/kaizenfaqs',
+  $help_url                            = 'http://massopen.cloud/blog/wiki/kaizenfaqs',
   $local_settings_template             = 'horizon/local_settings.py.erb',
   $configure_apache                    = true,
   $bind_address                        = undef,
