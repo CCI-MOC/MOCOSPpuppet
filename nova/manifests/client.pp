@@ -11,10 +11,16 @@
 class nova::client(
   $ensure = 'present'
 ) {
-
-  package { 'python-novaclient':
-    ensure => $ensure,
-    tag    => ['openstack'],
+  if $operatingsystem== 'CentOS' {
+    package { 'python2-novaclient':
+      ensure => $ensure,
+      tag    => ['openstack'],
+    }
   }
-
+  if $operatingsystem== 'RedHat' {
+    package { 'python-novaclient':
+      ensure => $ensure,
+      tag    => ['openstack'],
+    }
+  }
 }

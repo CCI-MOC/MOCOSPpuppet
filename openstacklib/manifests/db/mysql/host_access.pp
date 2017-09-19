@@ -22,20 +22,25 @@ define openstacklib::db::mysql::host_access (
   $password_hash,
   $database,
   $privileges,
+  $create_user  = true,
+  $create_grant = true,
 ) {
   validate_re($title, '_', 'Title must be $dbname_$host')
 
   $host = inline_template('<%= @title.split("_").last %>')
 
-  mysql_user { "${user}@${host}":
-    password_hash => $password_hash,
-    require       => Mysql_database[$database],
+if $create_user {
+    mysql_user { "${user}@${host}":
+      password_hash => $password_hash,
+      require       => Mysql_database[$database],
+    }
   }
-
-  mysql_grant { "${user}@${host}/${database}.*":
-    privileges => $privileges,
-    table      => "${database}.*",
-    require    => Mysql_user["${user}@${host}"],
-    user       => "${user}@${host}",
+if $create_grant {
+    mysql_grant { "${user}@${host}/${database}.*":
+      privileges => $privileges,
+      table      => "${database}.*",
+      require    => Mysql_user["${user}@${host}"],
+      user       => "${user}@${host}",
+    }
   }
 }

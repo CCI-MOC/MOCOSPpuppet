@@ -79,6 +79,7 @@ class cinder::glance (
     'DEFAULT/glance_api_insecure':        value => $glance_api_insecure;
     'DEFAULT/glance_api_ssl_compression': value => $glance_api_ssl_compression;
     'DEFAULT/glance_request_timeout':     value => $glance_request_timeout;
+    'DEFAULT/enabled_backends':           value => 'rbd';
   }
 
 }

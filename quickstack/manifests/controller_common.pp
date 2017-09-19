@@ -753,9 +753,9 @@ class quickstack::controller_common (
   class {'memcached':}
   
   if $sahara_enabled {
-    $dbport_list = ['80', '443', '5000', '35357', '8080', '8773', '8774', '8775', '8776', '8777', '9292', '9696', '6080', '8386']
+    $dbport_list = ['80', '443', '5000', '35357', '8080', '8773', '8774', '8775', '8776', '8777', '9292', '9696', '6080', '8386', '8004']
   } else {
-    $dbport_list = ['80', '443', '5000', '35357', '8080', '8773', '8774', '8775', '8776', '8777', '9292', '9696', '6080']
+    $dbport_list = ['80', '443', '5000', '35357', '8080', '8773', '8774', '8775', '8776', '8777', '9292', '9696', '6080', '8004']
   }
   
   firewall { '001 controller incoming':
@@ -769,29 +769,6 @@ class quickstack::controller_common (
     action => 'accept',
   }
 
-#  firewall { '001 controller incoming pt2':
-#    proto    => 'tcp',
-#    dport    => ['8000', '8003', '8004','6789'],
-#    action   => 'accept',
-#  }
-
-  if $ssl {
-    if str2bool_i("$horizon_ssl") {
-#      firewall { '002 horizon incoming':
-#        proto  => 'tcp',
-#        dport  => ['443',],
-#        action => 'accept',
-#      }
-    }
-
-    if str2bool_i("$amqp_ssl") {
-      firewall { '003 amqp incoming':
-        proto    => 'tcp',
-        dport    => ['5671',],
-        action   => 'accept',
-      }
-    }
-  }
 
   if ($::selinux != "false"){
     selboolean { 'httpd_can_network_connect':
@@ -856,6 +833,19 @@ class quickstack::controller_common (
   }
   package { "yum-utils":
     ensure => latest,
+  }
+  package { "openstack-utils":
+    ensure => latest,
+  }
+
+  package { "openstack-nova-placement-api":
+    ensure => latest,
+  }
+
+  if (($operatingsystem == 'CentOS') and hiera('moc::clusterdeployment') == 'true'){
+    package {"mariadb-galera-common":
+      ensure => latest,
+    }
   }
 #This belongs to a separate manifest and only needs to be declared here
 #Customization for isntalling sensu

@@ -85,7 +85,7 @@ class quickstack::neutron::controller (
   $neutron_metadata_proxy_secret = $quickstack::params::neutron_metadata_proxy_secret,
   $mysql_host                    = $quickstack::params::mysql_host,
   $mysql_root_password           = $quickstack::params::mysql_root_password,
-  $neutron_core_plugin           = 'neutron.plugins.ml2.plugin.Ml2Plugin',
+  $neutron_core_plugin           = 'ml2',
   $neutron_conf_additional_params = { default_quota => 'default',
                                       quota_network => 'default',
                                       quota_subnet => 'default',
@@ -411,7 +411,7 @@ class quickstack::neutron::controller (
     allow_automatic_l3agent_failover => str2bool_i($allow_automatic_l3agent_failover),
   }
 
-  if $neutron_core_plugin == 'neutron.plugins.ml2.plugin.Ml2Plugin' {
+  if $neutron_core_plugin == 'ml2' {
 
     neutron_config {
       'DEFAULT/service_plugins':

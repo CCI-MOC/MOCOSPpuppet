@@ -1,0 +1,15 @@
+pass=<%= scope.function_hiera(['quickstack::params::nova_user_password']) %>
+user=placement
+region=<%= scope.function_hiera(['openstack::keystone::region']) %>
+svcurl=<%= scope.function_hiera(['quickstack::params::controller_admin_url']) %>
+
+. /root/keystonerc_admin
+chown nova:nova  /var/log/nova/nova-placement-api.log
+
+openstack user list |grep $user > /dev/null
+if [ "$?" != "0"  ]; then
+  openstack user create --password $pass $user
+  openstack role add --project services --user $user admin
+  openstack service create --name placement --description "OpenStack Placement" $user
+  openstack endpoint create --region $region placement --publicurl $svcurl:8778 --adminurl $svcurl:8778 --internalurl $svcurl:8778
+fi

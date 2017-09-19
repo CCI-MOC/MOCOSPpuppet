@@ -11,9 +11,16 @@
 class keystone::client (
   $ensure = 'present'
 ) {
-
-  package { 'python-keystoneclient':
-    ensure => $ensure,
-    tag    => 'openstack',
+  if $operatingsystem== 'CentOS' {
+    package { 'python2-keystoneclient':
+      ensure => $ensure,
+      tag    => 'openstack',
+    }
+  }
+  if $operatingsystem== 'RedHat' {
+    package { 'python-keystoneclient':
+      ensure => $ensure,
+      tag    => 'openstack',
+    }
   }
 }

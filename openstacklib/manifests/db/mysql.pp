@@ -45,6 +45,8 @@ define openstacklib::db::mysql (
   $collate        = 'utf8_general_ci',
   $allowed_hosts  = [],
   $privileges     = 'ALL',
+  $create_user    = true,
+  $create_grant   = true,
 ) {
 
   include ::mysql::client
@@ -55,14 +57,17 @@ define openstacklib::db::mysql (
     collate => $collate,
     require => [ Class['mysql::server'], Class['mysql::client'] ],
   }
+  if $create_user or $create_grant {
+    $allowed_hosts_list = unique(concat(any2array($allowed_hosts), [$host]))
+    $real_allowed_hosts = prefix($allowed_hosts_list, "${dbname}_")
 
-  $allowed_hosts_list = unique(concat(any2array($allowed_hosts), [$host]))
-  $real_allowed_hosts = prefix($allowed_hosts_list, "${dbname}_")
-
-  openstacklib::db::mysql::host_access { $real_allowed_hosts:
-    user          => $user,
-    password_hash => $password_hash,
-    database      => $dbname,
-    privileges    => $privileges,
+    openstacklib::db::mysql::host_access { $real_allowed_hosts:
+      user          => $user,
+      password_hash => $password_hash,
+      database      => $dbname,
+      privileges    => $privileges,
+      create_user   => $create_user,
+      create_grant  => $create_grant,
+    }
   }
 }

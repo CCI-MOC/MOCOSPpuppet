@@ -225,6 +225,14 @@ class nova::api(
     'DEFAULT/metadata_workers':      value  => $metadata_workers;
     'DEFAULT/use_forwarded_for':     value  => $use_forwarded_for;
     'osapi_v3/enabled':              value  => $osapi_v3;
+    'placement/auth_url':            value  => $identity_uri;
+    'placement/auth_type':           value  => 'password';
+    'placement/username':            value  => 'placement';
+    'placement/password':            value  => $admin_password, secret => true;
+    'placement/user_domain_name':    value  => 'default';
+    'placement/project_name':        value  => 'services';
+    'placement/project_domain_name': value  => 'default';
+    'placement/os_region_name':      value  => hiera('openstack::keystone::region');
   }
 
   if ($neutron_metadata_proxy_shared_secret){
@@ -358,11 +366,26 @@ class nova::api(
     Package<| title == $::nova::params::common_package_name |> ~> Exec['nova-db-sync']
 
     exec { 'nova-db-sync':
-      command     => '/usr/bin/nova-manage db sync; /usr/bin/nova-manage api_db sync',
+      command     => 'nova-manage api_db sync; nova-manage cell_v2 map_cell0; nova-manage db sync; nova-manage cell_v2 create_cell; nova-manage cell_v2 discover_hosts',
+      path        => '/usr/bin/',
       refreshonly => true,
       subscribe   => Exec['post-nova_config'],
+      onlyif  => "/bin/test -f /root/.my.cnf",
     }
   }
+  file { 'nova-placement':
+    ensure => 'file',
+    content => template('moc_openstack/nova-placement.erb'),
+    path => '/tmp/nova-placement',
+    owner => 'root',
+    group => 'root',
+    mode  => '0755',
+  }
+    exec { 'create-plscement-service':
+      command     => '/tmp/nova-placement',
+      path        => '/usr/bin/',
+      onlyif  => "/bin/test -f /root/.my.cnf",
+    }
 
   # Remove auth configuration from api-paste.ini
   nova_paste_api_ini {

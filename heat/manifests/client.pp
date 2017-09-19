@@ -13,10 +13,18 @@ class heat::client (
 
   include ::heat::params
 
-  package { 'python-heatclient':
-    ensure => $ensure,
-    name   => $::heat::params::client_package_name,
-    tag    => 'openstack',
+  if $operatingsystem== 'CentOS' {
+    package { 'python2-heatclient':
+      ensure => $ensure,
+      name   => $::heat::params::client_package_name,
+      tag    => 'openstack',
+    }
   }
-
+  if $operatingsystem== 'RedHat' {
+    package { 'python2-heatclient':
+      ensure => $ensure,
+      name   => $::heat::params::client_package_name,
+      tag    => 'openstack',
+    }
+  }
 }

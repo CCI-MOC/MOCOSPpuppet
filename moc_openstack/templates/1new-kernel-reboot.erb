@@ -3,11 +3,12 @@ movetimeout=600
 hst=`hostname`
 fileoncotrollersonly=<%= scope.function_hiera(['quickstack::params::surcntfile']) %>
 clusterdeployment=<%= scope.function_hiera(['moc::clusterdeployment']) %>
+alerts=<%= scope.function_hiera(['moc::alertsemail']) %>
 [ -f $fileoncotrollersonly ] && role=control || role=compute
 
 if [ "$role" == "control" ]; then
   if [ "$clusterdeployment" == "true" ];then
-    pcs status cluster|grep Offline > /dev/null && echo 'Cluster node(s) are offline' | mail -s "Controller $hst" alerts && exit
+    pcs status cluster|grep Offline > /dev/null && echo 'Cluster node(s) are offline' | mail -s "Controller $hst" $alerts && exit
     [ "`rpm -q kernel|tail -n 1|cut -d l -f 2`" != "-`uname -r|cut -d l -f 1`" ] && iptables-save > /dev/null && service mariadb stop && sync && reboot -f
   else
     [ "`rpm -q kernel|tail -n 1|cut -d l -f 2`" != "-`uname -r|cut -d l -f 1`" ] && iptables-save > /dev/null && service mariadb stop && sync && reboot -f
@@ -25,7 +26,7 @@ if [ "$role" == "compute" ]; then
     ((movetimeout--))
 #    echo $movetimeout
     if [ "$movetimeout" == "0" ]; then
-      echo Live migrate failed | mail -s "Nova $hst" alerts
+      echo Live migrate failed | mail -s "Nova $hst" $alerts
       exit
     fi
   done

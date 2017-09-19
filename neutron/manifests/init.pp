@@ -422,18 +422,19 @@ class neutron (
       neutron_config { 'oslo_messaging_rabbit/rabbit_hosts':     value  => join($rabbit_hosts, ',') }
       neutron_config { 'oslo_messaging_rabbit/rabbit_ha_queues': value  => true }
     } else  {
-      neutron_config { 'oslo_messaging_rabbit/rabbit_host':      value => $rabbit_host }
-      neutron_config { 'oslo_messaging_rabbit/rabbit_port':      value => $rabbit_port }
-      neutron_config { 'oslo_messaging_rabbit/rabbit_hosts':     value => "${rabbit_host}:${rabbit_port}" }
-      neutron_config { 'oslo_messaging_rabbit/rabbit_ha_queues': value => false }
+      neutron_config { 'oslo_messaging_rabbit/rabbit_host':      ensure => absent; }
+      neutron_config { 'oslo_messaging_rabbit/rabbit_port':      ensure => absent; }
+      neutron_config { 'oslo_messaging_rabbit/rabbit_hosts':     ensure => absent; }
+      neutron_config { 'oslo_messaging_rabbit/rabbit_ha_queues': ensure => absent; }
     }
 
     neutron_config {
-      'oslo_messaging_rabbit/rabbit_userid':         value => $rabbit_user;
-      'oslo_messaging_rabbit/rabbit_password':       value => $rabbit_password, secret => true;
-      'oslo_messaging_rabbit/rabbit_virtual_host':   value => $rabbit_virtual_host;
-      'oslo_messaging_rabbit/rabbit_use_ssl':        value => $rabbit_use_ssl;
+      'oslo_messaging_rabbit/rabbit_userid':         ensure => absent;
+      'oslo_messaging_rabbit/rabbit_password':       ensure => absent;
+      'oslo_messaging_rabbit/rabbit_virtual_host':   ensure => absent;
+      'oslo_messaging_rabbit/rabbit_use_ssl':        ensure => absent;
       'oslo_messaging_rabbit/kombu_reconnect_delay': value => $kombu_reconnect_delay;
+      'DEFAULT/transport_url':			     value => "rabbit://${rabbit_user}:${rabbit_password}@${rabbit_host}:${rabbit_port}${rabbit_virtual_host}";
     }
 
     if $rabbit_use_ssl {

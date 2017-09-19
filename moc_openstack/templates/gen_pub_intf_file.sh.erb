@@ -4,7 +4,7 @@ FILE="/etc/sysconfig/network-scripts/ifcfg-<%= pub_iface %>.<%= pub_vlan %>"
 
 #HOST=$(hostname | cut -d- -f3 | cut -d. -f1)
 HOST=$((hostname -s | cut -d- -f3|grep . || hostname -s | cut -d- -f2|grep .) | sed -e 's/^[0]*//')
-HOST_IP="<%= pub_net %>.$HOST"
+HOST_IP="<%= pub_net %>$HOST"
 
 rm $FILE
 touch $FILE
@@ -14,5 +14,5 @@ echo "BOOTPROTO=static" >> $FILE
 echo "VLAN=yes" >> $FILE
 echo "IPADDR=$HOST_IP" >> $FILE
 echo "NETMASK=<%= pub_netmask %>" >> $FILE
-echo "MTU=1500" >> $FILE
-echo "DEFROUTE=no" >> $FILE
+echo "DEFROUTE=yes" >> $FILE
+echo "GATEWAY=<%= pub_net %>" >> $FILE

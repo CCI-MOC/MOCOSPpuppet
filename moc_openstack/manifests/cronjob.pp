@@ -19,6 +19,7 @@ class moc_openstack::cronjob (
     $epel_file_path = "${base_dir}epel7local-prod.repo"
     $suricata_file_path = "${base_dir}suricata7local-prod.repo"
     $rhel7_link = "http://${repo_server}/repos/rhel7local-prod.repo"
+    $centos7_link = "http://${repo_server}/repos/centos7local-prod.repo"
     $epel_link = "http://${repo_server}/repos/epel7local-prod.repo"
     $suricata_link = "http://${repo_server}/repos/suricata7local-prod.repo"
   } else {
@@ -26,31 +27,34 @@ class moc_openstack::cronjob (
     $epel_file_path = "${base_dir}epel7local.repo"
     $suricata_file_path = "${base_dir}suricata7local.repo"
     $rhel7_link = "http://${repo_server}/repos/rhel7local.repo"
+    $centos7_link = "http://${repo_server}/repos/centos7local.repo"
     $epel_link = "http://${repo_server}/repos/epel7local.repo"
     $suricata_link = "http://${repo_server}/repos/suricata7local.repo"
   }
 
   # backup the original redhat.repo before puppet run
-  exec {'backup_redhat_repo':
-    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
-    command => "/bin/cp ${base_dir}redhat.repo ${base_dir}redhat.repo.default",
-  } ->
-  exec {'disable_redhat_repos':
-    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
-    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}redhat.repo",
-  } ->
-  exec {'disable_epel_repos':
-    onlyif  => "/bin/test -f ${base_dir}epel.repo",
-    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel.repo",
-  } ->
-  exec {'disable_epel_testing_repos':
-    onlyif  => "/bin/test -f ${base_dir}epel-testing.repo",
-    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel-testing.repo",
-  } ->
+#  exec {'backup_redhat_repo':
+#    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
+#    command => "/bin/cp ${base_dir}redhat.repo ${base_dir}redhat.repo.default",
+#  } ->
+#  exec {'disable_redhat_repos':
+#    onlyif  => "/bin/test -f ${base_dir}redhat.repo",
+#    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}redhat.repo",
+#  } ->
+#  exec {'disable_epel_repos':
+#    onlyif  => "/bin/test -f ${base_dir}epel.repo",
+#    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel.repo",
+#  } ->
+#  exec {'disable_epel_testing_repos':
+#    onlyif  => "/bin/test -f ${base_dir}epel-testing.repo",
+#    command => "/bin/sed -i '/enabled/c\enabled = 0 ' ${base_dir}epel-testing.repo",
+#  } ->
+
   # update repos if something has changed. -N checks if the file's
   # timestamp has changed. If yes, it downloads it. 
-  exec {'update_rhel7_file':
-    command => "/bin/wget -q -N $rhel7_link -P ${base_dir}",
+
+  exec {'update_local_repo_file':
+    command => "/usr/bin/grep -i centos /etc/redhat-release && /bin/wget -q -N $centos7_link -P ${base_dir} || /bin/wget -q -N $rhel7_link -P ${base_dir}",
   } ->
   exec {'update_epel_file':
     command => "/bin/wget -q -N $epel_link -P ${base_dir}",
