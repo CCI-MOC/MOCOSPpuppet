@@ -1,0 +1,2 @@
+
+sensu ALL=(root) NOPASSWD: /usr/bin/virsh

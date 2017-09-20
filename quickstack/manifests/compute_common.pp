@@ -474,9 +474,18 @@ if hiera('moc::usesensu') == 'true' {
          "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb",
          "puppet:///modules/sensu/plugins/disk-metrics.rb",
          "puppet:///modules/sensu/plugins/vmstat-metrics.rb",
-         "puppet:///modules/sensu/plugins/iostat-metrics.rb"
+         "puppet:///modules/sensu/plugins/iostat-metrics.rb",
+         "puppet:///modules/sensu/plugins/vm-metrics.py"
       ]
     }
+
+   file { '/etc/sudoers.d/sensu-rootwrap':
+    ensure => file,
+    owner  => 'root',
+    group  => 'root',
+    mode   => '0440',
+    source => 'puppet:///modules/quickstack/sensu-rootwrap.fix'
+  }
 }
 
   class {'quickstack::ntp':

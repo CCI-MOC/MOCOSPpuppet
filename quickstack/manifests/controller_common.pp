@@ -883,7 +883,7 @@ if hiera('moc::usesensu') == 'true' {
          "puppet:///modules/sensu/plugins/cpu-pcnt-usage-metrics.rb",
          "puppet:///modules/sensu/plugins/disk-metrics.rb",
          "puppet:///modules/sensu/plugins/vmstat-metrics.rb",
-         "puppet:///modules/sensu/plugins/iostat-metrics.rb"
+         "puppet:///modules/sensu/plugins/iostat-metrics.rb",
       ]
     }
 }
