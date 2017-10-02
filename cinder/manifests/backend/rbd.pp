@@ -84,7 +84,7 @@ define cinder::backend::rbd (
     "${name1}/volume_driver":                        value => 'cinder.volume.drivers.rbd.RBDDriver';
     "${name1}/rbd_ceph_conf":                        value => $rbd_ceph_conf;
     "${name1}/rbd_user":                             value => $rbd_user;
-    "${name1}/rbd_pool":                             value => $name;
+    "${name1}/rbd_pool":                             value => $name1;
     "${name1}/rbd_max_clone_depth":                  value => $rbd_max_clone_depth;
     "${name1}/rbd_flatten_volume_from_snapshot":     value => $rbd_flatten_volume_from_snapshot;
     "${name1}/rbd_secret_uuid":                      value => $rbd_secret_uuid;
