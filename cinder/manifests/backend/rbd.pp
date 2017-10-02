@@ -74,14 +74,23 @@ define cinder::backend::rbd (
     "rbd/rbd_pool":                             value => $rbd_pool;
     "rbd/rbd_max_clone_depth":                  value => $rbd_max_clone_depth;
     "rbd/rbd_flatten_volume_from_snapshot":     value => $rbd_flatten_volume_from_snapshot;
+    "rbd/rbd_secret_uuid":                      value => $rbd_secret_uuid;
   }
 
-  if $rbd_secret_uuid {
-    cinder_config {"${name}/rbd_secret_uuid": ensure => absent;}
-    cinder_config {"rbd/rbd_secret_uuid":     value  => $rbd_secret_uuid;}
-  } else {
-    cinder_config {"${name}/rbd_secret_uuid": ensure => absent;}
+  if $::quickstack::params::cinder_perf_rbd_pool {
+  $name1 = $::quickstack::params::cinder_perf_rbd_pool
+  cinder_config {
+    "${name1}/volume_backend_name":                  value => $name1;
+    "${name1}/volume_driver":                        value => 'cinder.volume.drivers.rbd.RBDDriver';
+    "${name1}/rbd_ceph_conf":                        value => $rbd_ceph_conf;
+    "${name1}/rbd_user":                             value => $rbd_user;
+    "${name1}/rbd_pool":                             value => $name;
+    "${name1}/rbd_max_clone_depth":                  value => $rbd_max_clone_depth;
+    "${name1}/rbd_flatten_volume_from_snapshot":     value => $rbd_flatten_volume_from_snapshot;
+    "${name1}/rbd_secret_uuid":                      value => $rbd_secret_uuid;
+    }
   }
+
 
   if $volume_tmp_dir {
     cinder_config {"${name}/volume_tmp_dir": value => $volume_tmp_dir;}

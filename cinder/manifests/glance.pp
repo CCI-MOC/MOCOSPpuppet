@@ -60,7 +60,7 @@ class cinder::glance (
   $glance_num_retries         = '0',
   $glance_api_insecure        = false,
   $glance_api_ssl_compression = false,
-  $glance_request_timeout     = undef
+  $glance_request_timeout     = undef,
 ) {
 
 #  if is_array($glance_api_servers) {
@@ -72,14 +72,19 @@ class cinder::glance (
 #      'DEFAULT/glance_api_servers': value => $glance_api_servers;
 #    }
 #  }
-
+  if $::quickstack::params::cinder_perf_rbd_pool {
+    $backends = "rbd, $::quickstack::params::cinder_perf_rbd_pool"
+  }else
+  {
+    $backends = 'rbd'
+  }
   cinder_config {
     'DEFAULT/glance_api_version':         value => $glance_api_version;
     'DEFAULT/glance_num_retries':         value => $glance_num_retries;
     'DEFAULT/glance_api_insecure':        value => $glance_api_insecure;
     'DEFAULT/glance_api_ssl_compression': value => $glance_api_ssl_compression;
     'DEFAULT/glance_request_timeout':     value => $glance_request_timeout;
-    'DEFAULT/enabled_backends':           value => 'rbd';
+    'DEFAULT/enabled_backends':           value => $backends;
   }
 
 }

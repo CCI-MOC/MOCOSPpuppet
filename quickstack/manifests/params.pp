@@ -139,6 +139,7 @@ class quickstack::params (
   # $cinder_backend_netapp_name      = produce_array_with_prefix("netapp", 1, size($cinder_netapp_hostname)),
   #  Cinder RBD
   $cinder_rbd_pool,
+  $cinder_perf_rbd_pool = undef,
   $libvirt_rbd_pool,
   $cinder_rbd_ceph_conf,
   $cinder_rbd_flatten_volume_from_snapshot,
