@@ -73,7 +73,7 @@ class cinder::glance (
 #    }
 #  }
   if $::quickstack::params::cinder_perf_rbd_pool {
-    $backends = "$::quickstack::params::cinder_perf_rbd_pool, rbd"
+    $backends = "rbd, $::quickstack::params::cinder_perf_rbd_pool"
   }else
   {
     $backends = 'rbd'
