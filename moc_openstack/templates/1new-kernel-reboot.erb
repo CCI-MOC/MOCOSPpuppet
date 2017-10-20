@@ -1,3 +1,4 @@
+ps -A|grep -v yum-cron|grep yum > /dev/null && exit
 package-cleanup -y --oldkernels --count=3 > /dev/null
 movetimeout=600
 hst=`hostname`
