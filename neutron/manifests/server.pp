@@ -314,7 +314,7 @@ class neutron::server (
     'database/max_pool_size':                   value => $database_max_pool_size;
     'database/max_overflow':                    value => $database_max_overflow;
     'DEFAULT/global_physnet_mtu':               value => 9050;
-    'DEFAULT/dns_domain':                       value => 'moc.local';
+    'DEFAULT/dns_domain':                       value => 'massopen.cloud';
    }
 
   if $state_path {
