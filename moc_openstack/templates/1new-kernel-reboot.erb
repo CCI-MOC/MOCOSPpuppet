@@ -1,4 +1,5 @@
 ps -A|grep -v yum-cron|grep yum > /dev/null && exit
+rm -rf /etc/yum.repos.d/CentOS*
 package-cleanup -y --oldkernels --count=3 > /dev/null
 movetimeout=600
 hst=`hostname`
