@@ -89,7 +89,7 @@ class quickstack::sahara (
   file_line { 'spark_cleanup':
     notify  => Service['openstack-sahara-all'], # only restarts Sahara if a file changes
     path    => '/usr/lib/python2.7/site-packages/sahara/plugins/spark/plugin.py',
-    line    => '        return ["1.6.0"]',
+    line    => '        return ["2.1.0", "1.6.0"]',
     after   => "    def get_versions\u0028self\u0029:"
   }
 
