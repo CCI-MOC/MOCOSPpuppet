@@ -184,6 +184,7 @@ class neutron::plugins::ml2 (
     'ml2/path_mtu':                         value => 9050; 
     'ml2/tenant_network_types':             value => join($tenant_network_types, ',');
     'ml2/mechanism_drivers':                value => join($mechanism_drivers, ',');
+    'ml2/physical_network_mtus':            value => 'default:1500';
     'securitygroup/enable_security_group':  value => $enable_security_group;
   }
 
