@@ -34,7 +34,7 @@ GEM
       specinfra (~> 0.3)
     blimpy (0.6.7)
       fog
-      minitar
+      minitar (0.6)
       thor
     builder (3.2.2)
     coderay (1.1.0)
