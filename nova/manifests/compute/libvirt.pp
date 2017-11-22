@@ -92,6 +92,7 @@ class nova::compute::libvirt (
   $remove_unused_kernels                      = undef,
   $remove_unused_resized_minimum_age_seconds  = undef,
   $remove_unused_original_minimum_age_seconds = undef,
+  $cpu_hostpass_list			      = 'default',
   $libvirt_service_name                       = $::nova::params::libvirt_service_name,
 ) inherits nova::params {
 
@@ -101,17 +102,23 @@ class nova::compute::libvirt (
 
   # libvirt_cpu_mode has different defaults depending on hypervisor.
 #  if !$libvirt_cpu_mode {
-  if hiera('nova::compute::libvirt::libvirt_cpu_mode') == 'default' {
-    case $libvirt_virt_type {
-      'kvm','qemu': {
-        $libvirt_cpu_mode_real = 'host-model'
+
+    if $::productname in $cpu_hostpass_list {
+      $libvirt_cpu_mode_real = 'host-passthrough'
+    } else {
+
+    if hiera('nova::compute::libvirt::libvirt_cpu_mode') == 'default' {
+      case $libvirt_virt_type {
+        'kvm','qemu': {
+          $libvirt_cpu_mode_real = 'host-model'
+        }
+        default: {
+          $libvirt_cpu_mode_real = 'none'
+        }
       }
-      default: {
-        $libvirt_cpu_mode_real = 'none'
-      }
+    } else {
+      $libvirt_cpu_mode_real = $libvirt_cpu_mode
     }
-  } else {
-    $libvirt_cpu_mode_real = $libvirt_cpu_mode
   }
 
   if($::osfamily == 'Debian') {
