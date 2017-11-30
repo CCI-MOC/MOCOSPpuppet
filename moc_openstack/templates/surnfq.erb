@@ -60,6 +60,7 @@ iptables -A suricata -s 172.16.0.0/12 -d 192.168.0.0/16 -j RETURN
 iptables -A suricata -s 192.168.0.0/16 -d 10.0.0.0/8 -j RETURN
 iptables -A suricata -s 192.168.0.0/16 -d 172.16.0.0/12 -j RETURN
 iptables -A suricata -s 192.168.0.0/16 -d 192.168.0.0/16 -j RETURN
+iptables -A suricata -m state --state related,established -j RETURN
 iptables -A suricata -m mark ! --mark 0x1/0x1 -j NFQUEUE
 
 echo `iptables -L suricata -n| md5sum` > $sumfile
