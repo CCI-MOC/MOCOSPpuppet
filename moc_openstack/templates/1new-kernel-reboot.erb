@@ -29,7 +29,7 @@ if [ "$role" == "compute" ]; then
     busy=false
     for j in `cat /tmp/vms`
     do
-      nova show $j | grep $hst >/dev/null && busy=true
+      nova show $j | grep -A15 $hst | grep power_state|grep 1>/dev/null && busy=true
     done
     if [ "$busy" == "false" ]; then
       nova service-enable $hst nova-compute > /dev/null
