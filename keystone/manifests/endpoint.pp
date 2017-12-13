@@ -39,7 +39,7 @@ class keystone::endpoint (
 ) {
 
   $public_url_real = "${public_url}/${version}"
-  $admin_url_real = "${admin_url}/${version}"
+  $admin_url_real = "${admin_url}/v2.0"
 
   if $internal_url {
     $internal_url_real = "${internal_url}/${version}"
