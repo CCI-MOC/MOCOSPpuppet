@@ -34,12 +34,12 @@ class keystone::endpoint (
   $public_url        = 'http://127.0.0.1:5000',
   $internal_url      = undef,
   $admin_url         = 'http://127.0.0.1:35357',
-  $version           = 'v2.0',
+  $version           = '',
   $region            = 'RegionOne',
 ) {
 
   $public_url_real = "${public_url}/${version}"
-  $admin_url_real = "${admin_url}/${version}"
+  $admin_url_real = "${admin_url}/v2.0"
 
   if $internal_url {
     $internal_url_real = "${internal_url}/${version}"

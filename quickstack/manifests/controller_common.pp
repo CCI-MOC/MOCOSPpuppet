@@ -741,7 +741,7 @@ class quickstack::controller_common (
     keystone_default_role => '_member_',
     #Keystone_host now keystone_url
     #keystone_host         => $controller_priv_host,
-    keystone_url          => "$keystone_pub_url/v2.0",
+    keystone_url          => "$keystone_pub_url/v3",
     fqdn                  => ["$controller_pub_host", "$::fqdn", "$::hostname", 'localhost', '*'],
     listen_ssl            => str2bool_i("$horizon_ssl"),
     horizon_cert          => $horizon_cert,

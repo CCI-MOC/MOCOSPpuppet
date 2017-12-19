@@ -45,9 +45,9 @@ SESSION_COOKIE_SECURE = True
 # NOTE: The version should be formatted as it appears in the URL for the
 # service API. For example, The identity service APIs have inconsistent
 # use of the decimal point, so valid options would be "2.0" or "3".
-# OPENSTACK_API_VERSIONS = {
-#     "identity": 3
-# }
+OPENSTACK_API_VERSIONS = {
+ "identity": 3
+}
 
 # Set this to True if running on multi-domain model. When this is enabled, it
 # will require user to enter the Domain name in addition to username for login.
@@ -115,11 +115,11 @@ SECRET_KEY = '<%= @secret_key %>'
 #        'LOCATION' : '127.0.0.1:11211',
 #    }
 #}
+SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 CACHES = {
     'default': {
         <% if @cache_server_ip %>
-#        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache'
         'BACKEND': 'django.core.cache.backends.memcached.MemcachedCache',
           <% if @cache_server_ip.kind_of?(Array) %>
             <%  split = ":" + @cache_server_port + "','" %>
