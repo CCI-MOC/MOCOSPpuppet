@@ -590,3 +590,15 @@ HORIZON_IMAGES_UPLOAD_MODE = 'legacy'
 OPENSTACK_HEAT_STACK = {
     'enable_user_pass': False,
 }
+
+<% if scope.lookupvar('quickstack::params::sso_url') != :undef -%>
+WEBSSO_ENABLED = True
+WEBSSO_CHOICES = (
+    ("credentials", _("Local Openstack Account")),
+        ("moc_openid", _("Your Institution Account")),
+        )
+
+WEBSSO_IDP_MAPPING = {
+    "moc_openid": ("moc", "openid"),}
+<% end -%>
+

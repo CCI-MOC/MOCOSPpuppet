@@ -24,7 +24,6 @@ class apache::params inherits ::apache::version {
   } else {
     $servername = $::hostname
   }
-
   # The default error log level
   $log_level = 'warn'
   $use_optional_includes = false
@@ -66,7 +65,7 @@ class apache::params inherits ::apache::version {
     $suphp_addhandler     = 'php5-script'
     $suphp_engine         = 'off'
     $suphp_configpath     = undef
-    # NOTE: The module for Shibboleth is not available to RH/CentOS without an additional repository. http://wiki.aaf.edu.au/tech-info/sp-install-guide
+          # NOTE: The module for Shibboleth is not available to RH/CentOS without an additional repository. http://wiki.aaf.edu.au/tech-info/sp-install-guide
     # NOTE: The auth_cas module isn't available to RH/CentOS without enabling EPEL.
     $mod_packages         = {
       'auth_cas'    => 'mod_auth_cas',
