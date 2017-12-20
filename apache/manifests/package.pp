@@ -62,9 +62,4 @@ class apache::package (
     name   => $apache_package,
     notify => Class['Apache::Service'],
   }
-
-  package { 'mod_auth_openidc':
-    ensure => $ensure,
-    notify => Class['Apache::Service'],
-  }
 }

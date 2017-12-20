@@ -450,5 +450,10 @@ class quickstack::params (
   $heat_domain_password,
   $sahara_plugins,
   $sahara_manage_policy,
+  
+  #SSO
+  $sso_url = undef,
+  $sso_uid = undef,
+  $sso_secret = undef,
 ) {
 }

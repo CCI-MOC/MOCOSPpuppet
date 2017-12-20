@@ -519,6 +519,19 @@ class keystone(
       package_ensure => $client_package_ensure,
     }
   }
+  if $quickstack::params::sso_url {
+    keystone_config {
+      'auth/methods'                 : value => 'password,token,openid';
+      'openid/remote_id_attribute'   : value => 'HTTP_OIDC_ISS';
+      'federation/trusted_dashboard' : value => "$quickstack::params::controller_pub_url/dashboard/auth/websso/";
+    }
+  } else {
+    keystone_config {
+      'auth/methods'                 : ensure => absent;
+      'openid/remote_id_attribute'   : ensure => absent;
+      'federation/trusted_dashboard' : ensure => absent;
+    }
+  }
 
   group { 'keystone':
     ensure  => present,

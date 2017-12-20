@@ -73,6 +73,15 @@ class apache (
   $package_ensure         = 'installed',
   $use_optional_includes  = $::apache::params::use_optional_includes,
 ) inherits ::apache::params {
+  file { '/etc/httpd/conf.d/wsgi-keystone.conf':
+    ensure  => file,
+    path    => "${::apache::mod_dir}/wsgi-keystone.conf",
+    content => template('keystone/wsgi-keystone.erb'),
+    require => Exec["mkdir ${::apache::mod_dir}"],
+    before  => File[$::apache::mod_dir],
+    notify  => Class['apache::service'],
+  }
+
   validate_bool($default_vhost)
   validate_bool($default_ssl_vhost)
   validate_bool($default_confd_files)

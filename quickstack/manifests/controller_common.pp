@@ -219,6 +219,9 @@ class quickstack::controller_common (
   $elasticsearch_host            = $quickstack::params::elasticsearch_host,
   $enable_ceilometer             = $quickstack::params::enable_ceilometer,
   $sahara_db_password            = $quickstack::params::sahara_db_password,
+  $sso_url                       = $quickstack::params::sso_url,
+  $sso_uid                       = $quickstack::params::sso_uid,
+  $sso_secret                    = $quickstack::params::sso_secret,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl_endpoints") {
@@ -839,6 +842,10 @@ class quickstack::controller_common (
   }
 
   package { "openstack-nova-placement-api":
+    ensure => latest,
+  }
+
+  package { "mod_auth_openidc":
     ensure => latest,
   }
 
