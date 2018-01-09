@@ -543,7 +543,7 @@ class quickstack::controller_common (
     }
   }
 
-  class { [ '::nova::scheduler', '::nova::cert', '::nova::consoleauth', '::nova::conductor' ]:
+  class { [ '::nova::scheduler', '::nova::consoleauth', '::nova::conductor' ]:
     enabled => true,
   }
 

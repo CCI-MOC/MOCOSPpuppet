@@ -16,20 +16,20 @@
 #   (optional) The state to set for the nova-cert package
 #   Defaults to 'present'
 #
-class nova::cert(
-  $enabled        = false,
-  $manage_service = true,
-  $ensure_package = 'present'
-) {
-
-  include ::nova::params
-
-  nova::generic_service { 'cert':
-    enabled        => $enabled,
-    manage_service => $manage_service,
-    package_name   => $::nova::params::cert_package_name,
-    service_name   => $::nova::params::cert_service_name,
-    ensure_package => $ensure_package,
-  }
-
-}
+#class nova::cert(
+#  $enabled        = false,
+#  $manage_service = false,
+#  $ensure_package = 'absent'
+#) {
+#
+#  include ::nova::params
+#
+#  nova::generic_service { 'cert':
+#    enabled        => $enabled,
+#    manage_service => $manage_service,
+#    package_name   => $::nova::params::cert_package_name,
+#    service_name   => $::nova::params::cert_service_name,
+#    ensure_package => $ensure_package,
+#  }
+#
+#}
