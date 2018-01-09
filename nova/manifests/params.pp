@@ -120,3 +120,7 @@ class nova::params {
   }
 
 }
+
+class nova::compute::libvirt::params {
+      $cpu_hostpass_list            = 'default'
+}

@@ -118,6 +118,9 @@ class quickstack::compute_common (
   $allow_resize_to_same_host    = $quickstack::params::allow_resize,
   $allow_migrate_to_same_host   = $quickstack::params::allow_migrate,
   $repo_server                  = $quickstack::params::repo_server,
+  $r730xd_pub_iface             = $quickstack::params::r730xd_pub_iface,
+  $r730xd_priv_iface            = $quickstack::params::r730xd_priv_iface,
+  $r730xd_ceph_iface            = $quickstack::params::r730xd_ceph_iface,
   $lenovo_pub_iface             = $quickstack::params::lenovo_pub_iface,
   $lenovo_priv_iface            = $quickstack::params::lenovo_priv_iface,
   $lenovo_ceph_iface            = $quickstack::params::lenovo_ceph_iface,
@@ -154,6 +157,11 @@ class quickstack::compute_common (
     $pub_iface  = $lenovo_pub_iface
     $priv_iface = $lenovo_priv_iface
     $ceph_iface = $lenovo_ceph_iface
+  }
+  elsif 'PowerEdge R730xd' in $::productname {
+    $pub_iface  = $r730xd_pub_iface
+    $priv_iface = $r730xd_priv_iface
+    $ceph_iface = $r730xd_ceph_iface
   }
   else {
     $pub_iface  = $default_pub_iface

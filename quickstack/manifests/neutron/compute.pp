@@ -85,6 +85,7 @@ class quickstack::neutron::compute (
   $neutron_pub_url              = $quickstack::params::neutron_pub_url,
   $keystone_admin_url           = $quickstack::params::keystone_admin_url,
   $lenovo_priv_iface            = $quickstack::params::lenovo_priv_iface,
+  $r730xd_priv_iface            = $quickstack::params::r730xd_priv_iface,
   $quanta_priv_iface            = $quickstack::params::quanta_priv_iface,
   $default_priv_iface           = $quickstack::params::default_priv_iface,
 ) inherits quickstack::params {
@@ -92,6 +93,10 @@ class quickstack::neutron::compute (
   if $::productname == 'QSSC-S99' {
       $local_ip      = find_ip("$ovs_tunnel_network","$quanta_priv_iface","")
       $private_iface = $quanta_priv_iface
+  }
+  elsif 'PowerEdge R730xd' in $::productname {
+      $local_ip      = find_ip("$ovs_tunnel_network","$r730xd_priv_iface","")
+      $private_iface = $r730xd_priv_iface
   }
   elsif 'System x3550 M5' in $::productname {
       $local_ip      = find_ip("$ovs_tunnel_network","$lenovo_priv_iface","")

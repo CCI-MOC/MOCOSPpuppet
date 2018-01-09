@@ -410,6 +410,9 @@ class quickstack::params (
   $repo_server,
 
   # interface configuration
+  $r730xd_pub_iface = undef,
+  $r730xd_priv_iface = undef,
+  $r730xd_ceph_iface = undef,
   $lenovo_pub_iface,
   $lenovo_priv_iface,
   $lenovo_ceph_iface,
