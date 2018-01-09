@@ -13,7 +13,8 @@ class quickstack::cinder(
   $use_syslog     = false,
   $log_facility   = 'LOG_USER',
 
-  $rpc_backend    = 'cinder.openstack.common.rpc.impl_kombu',
+#  $rpc_backend    = 'cinder.openstack.common.rpc.impl_kombu',
+  $rpc_backend    = 'kombu+memory',
   $amqp_host      = '127.0.0.1',
   $amqp_port      = '5672',
   $amqp_username  = '',

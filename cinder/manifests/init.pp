@@ -423,17 +423,18 @@ class cinder (
   }
 
   cinder_config {
-    'database/connection':               value => $database_connection, secret => true;
-    'database/idle_timeout':             value => $database_idle_timeout;
-    'database/min_pool_size':            value => $database_min_pool_size;
-    'database/max_retries':              value => $database_max_retries;
-    'database/retry_interval':           value => $database_retry_interval;
-    'DEFAULT/verbose':                   value => $verbose;
-    'DEFAULT/debug':                     value => $debug;
-    'DEFAULT/api_paste_config':          value => $api_paste_config;
-    'DEFAULT/rpc_backend':               value => $rpc_backend;
-    'DEFAULT/storage_availability_zone': value => $storage_availability_zone;
-    'DEFAULT/default_availability_zone': value => $default_availability_zone_real;
+    'database/connection':               value  => $database_connection, secret => true;
+    'database/idle_timeout':             value  => $database_idle_timeout;
+    'database/min_pool_size':            value  => $database_min_pool_size;
+    'database/max_retries':              value  => $database_max_retries;
+    'database/retry_interval':           value  => $database_retry_interval;
+    'DEFAULT/verbose':                   value  => $verbose;
+    'DEFAULT/debug':                     value  => $debug;
+    'DEFAULT/api_paste_config':          value  => $api_paste_config;
+    'DEFAULT/rpc_backend':               ensure => absent;
+    'DEFAULT/transport_url':             value  => "rabbit://${rabbit_userid}:${$rabbit_password}@${rabbit_host}:${rabbit_port}${rabbit_virtual_host}";
+    'DEFAULT/storage_availability_zone': value  => $storage_availability_zone;
+    'DEFAULT/default_availability_zone': value  => $default_availability_zone_real;
   }
 
   if $database_max_pool_size {

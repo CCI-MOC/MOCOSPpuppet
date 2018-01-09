@@ -199,7 +199,8 @@ class heat(
   $keystone_tenant             = 'services',
   $keystone_password           = false,
   $keystone_ec2_uri            = 'http://127.0.0.1:5000/v2.0/ec2tokens',
-  $rpc_backend                 = 'heat.openstack.common.rpc.impl_kombu',
+#  $rpc_backend                 = 'heat.openstack.common.rpc.impl_kombu',
+  $rpc_backend                 = 'kombu+memory',
   $rabbit_host                 = '127.0.0.1',
   $rabbit_port                 = 5672,
   $rabbit_hosts                = undef,
@@ -449,13 +450,14 @@ class heat(
 
 
   heat_config {
-    'DEFAULT/rpc_backend'                  : value => $rpc_backend;
-    'DEFAULT/debug'                        : value => $debug;
-    'DEFAULT/verbose'                      : value => $verbose;
-    'ec2authtoken/auth_uri'                : value => $keystone_ec2_uri;
-    'keystone_authtoken/admin_tenant_name' : value => $keystone_tenant;
-    'keystone_authtoken/admin_user'        : value => $keystone_user;
-    'keystone_authtoken/admin_password'    : value => $keystone_password, secret => true;
+    'DEFAULT/rpc_backend'                  : ensure => absent;
+    'DEFAULT/transport_url'                : value => "rabbit://${rabbit_userid}:${$rabbit_password}@${rabbit_host}:${rabbit_port}${rabbit_virtual_host}";
+    'DEFAULT/debug'                        : value  => $debug;
+    'DEFAULT/verbose'                      : value  => $verbose;
+    'ec2authtoken/auth_uri'                : value  => $keystone_ec2_uri;
+    'keystone_authtoken/admin_tenant_name' : value  => $keystone_tenant;
+    'keystone_authtoken/admin_user'        : value  => $keystone_user;
+    'keystone_authtoken/admin_password'    : value  => $keystone_password, secret => true;
   }
 
   # Log configuration
