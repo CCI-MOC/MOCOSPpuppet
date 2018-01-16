@@ -146,13 +146,13 @@ class quickstack::heat_controller(
     }
   }
 
-  file { '/usr/lib/python2.7/site-packages/heat/common/context.py':
-    notify => Service['openstack-heat-api', 'openstack-heat-engine'], # only restarts if change
-    ensure  => present,
-    owner   => 'root',
-    group   => 'root',
-    mode    => '0644',
-    source  => 'puppet:///modules/quickstack/heat_context.py',
-  }
+#  file { '/usr/lib/python2.7/site-packages/heat/common/context.py':
+#    notify => Service['openstack-heat-api', 'openstack-heat-engine'], # only restarts if change
+#    ensure  => present,
+#    owner   => 'root',
+#    group   => 'root',
+#    mode    => '0644',
+#    source  => 'puppet:///modules/quickstack/heat_context.py',
+#  }
 
 }
