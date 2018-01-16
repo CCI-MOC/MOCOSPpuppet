@@ -456,7 +456,7 @@ class nova(
   if $image_service == 'nova.image.glance.GlanceImageService' {
     if $glance_api_servers {
       nova_config {
-        'glance/api_servers': value  => $glance_api_servers;
+        'glance/api_servers': value  => $::quickstack::params::glance_pub_url;
 #        'glance/protocol':    value => $auth_protocol;
         'glance/protocol':    ensure => absent;
       }
