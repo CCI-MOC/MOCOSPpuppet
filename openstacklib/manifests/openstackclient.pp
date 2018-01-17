@@ -9,9 +9,10 @@
 #    Optional. Defaults to 'present'.
 #
 class openstacklib::openstackclient(
-  $package_ensure = 'present',
+  $package_ensure = 'latest',
 ){
-  package { 'python-openstackclient':
+    if $operatingsystem== 'CentOS' {$osclient_package_name = 'python2-openstackclient'} else {$osclient_package_name = 'python-openstackclient'}
+    package { $osclient_package_name:
     ensure => $package_ensure,
     tag    => 'openstack',
   }
