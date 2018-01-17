@@ -50,14 +50,14 @@ WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keys
     OIDCOAuthClientSecret <%= scope.lookupvar('quickstack::params::sso_secret') -%> 
     OIDCOAuthIntrospectionEndpoint <%= scope.lookupvar('quickstack::params::sso_url') -%>auth/realms/moc/protocol/openid-connect/token/introspect
     <LocationMatch /v3/OS-FEDERATION/identity_providers/.*?/protocols/openid/auth>
-        AuthType oauth20
+        AuthType openid-connect
         Require valid-user
     </LocationMatch>
 
-    <Location ~ "/v3/auth/OS-FEDERATION/websso">
-        AuthType openid-connect
-        Require valid-user
-    </Location>
+#    <Location ~ "/v3/auth/OS-FEDERATION/websso">
+#        AuthType openid-connect
+#        Require valid-user
+#    </Location>
 
     <Location ~ "/v3/auth/OS-FEDERATION/identity_providers/moc/protocols/openid/websso">
         AuthType openid-connect
