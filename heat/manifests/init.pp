@@ -458,6 +458,11 @@ class heat(
     'keystone_authtoken/admin_tenant_name' : value  => $keystone_tenant;
     'keystone_authtoken/admin_user'        : value  => $keystone_user;
     'keystone_authtoken/admin_password'    : value  => $keystone_password, secret => true;
+    'trustee/auth_type'                    : value  => 'password';
+    'trustee/username'                     : value  => $keystone_user;
+    'trustee/password'                     : value  => $keystone_password;
+    'trustee/auth_url'                     : value  => $identity_uri;
+    'trustee/user_domain_id'               : value  => 'default';
   }
 
   # Log configuration

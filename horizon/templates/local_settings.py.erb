@@ -580,7 +580,8 @@ UNDERCLOUD_ADMIN_PASSWORD = "<%= @tuskar_ui_undercloud_admin_password %>"
 DEPLOYMENT_MODE = "<%= @tuskar_ui_deployment_mode %>"
 <% end %>
 
-SAHARA_AUTO_IP_ALLOCATION_ENABLED=True
+SAHARA_AUTO_IP_ALLOCATION_ENABLED=False
+SAHARA_VERIFICATION_DISABLED=True
 REST_API_REQUIRED_SETTINGS = ['OPENSTACK_HYPERVISOR_FEATURES',
                                 'LAUNCH_INSTANCE_DEFAULTS',
                                 'OPENSTACK_IMAGE_FORMATS']

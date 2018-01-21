@@ -16,7 +16,12 @@ class quickstack::sahara (
   $sahara_cert           = $quickstack::params::sahara_cert,
   $sahara_manage_policy  = $quickstack::params::sahara_manage_policy,
 ) {
-  
+
+  exec { 'sahara_service_cleanup':
+    command => "systemctl stop openstack-sahara-all; systemctl disable openstack-sahara-all; systemctl stop openstack-sahara-api; systemctl disable openstack-sahara-api",
+    path => '/bin'
+  }
+ 
   if str2bool_i($sahara_use_ssl) {
       class {'moc_openstack::ssl::add_sahara_cert':
       }
@@ -33,8 +38,18 @@ class quickstack::sahara (
     identity_url        => $keystone_identity_uri,
     service_host        => '0.0.0.0',
     service_port        => 8386,
-    use_floating_ips    => false,
+    use_floating_ips    => true,
   }
+
+  file { '/etc/httpd/conf.d/sahara-api.conf':
+    notify  => Service['httpd'],
+    mode    => '0644',
+    owner   => 'root',
+    group   => 'root',
+    require => Package['httpd'],
+    source => 'puppet:///modules/quickstack/sahara-api.conf'
+  }
+
 
   sahara_config {
     'DEFAULT/heat_enable_wait_condition': value => false;
@@ -42,6 +57,7 @@ class quickstack::sahara (
     'DEFAULT/use_namespaces':             value => false;
     'DEFAULT/proxy_command':              value => "\'ip netns exec qdhcp-{network_id} nc {host} {port}\'";
     'DEFAULT/use_rootwrap':               value => true;
+    'DEFAULT/proxy_command_use_internal_ip': value => true;
   }
   
   if str2bool_i($sahara_use_ssl) { 
@@ -77,7 +93,7 @@ class quickstack::sahara (
       ensure => present,
     }
     file { '/etc/sahara/policy.json':
-      notify => Service['openstack-sahara-all'], # only restarts if change
+      notify => Service['httpd', 'openstack-sahara-engine'], # only restarts if change
       ensure => file,
       owner  => 'root',
       group  => 'sahara',
@@ -86,38 +102,17 @@ class quickstack::sahara (
     }
   }
   
-  file_line { 'spark_cleanup':
-    notify  => Service['openstack-sahara-all'], # only restarts Sahara if a file changes
-    path    => '/usr/lib/python2.7/site-packages/sahara/plugins/spark/plugin.py',
-    line    => '        return ["2.1.0", "1.6.0"]',
-    after   => "    def get_versions\u0028self\u0029:"
-  }
-
-  file_line { 'storm_cleanup':
-    notify  => Service['openstack-sahara-all'], # only restarts Sahara if a file changes
-    path    => '/usr/lib/python2.7/site-packages/sahara/plugins/storm/plugin.py',
-    line    => '        return ["1.0.1", "0.9.2"]',
-    after   => "    def get_versions\u0028self\u0029:"
-  }
-
-  if str2bool(hiera('swift_endpoint::real', 'false')) {
-    $swift = "'object-store'"
-  } else {
-    $swift = ""
-  }
-
   file_line { 'swift_dns':
-    # this fix is no longer necessary on Newton, but keeping it won't break anything
-    notify => Service['openstack-sahara-all'], # only restarts if change
+    notify => Service['httpd', 'openstack-sahara-engine'], # only restarts if change
     path   => '/usr/lib/python2.7/site-packages/sahara/utils/cluster.py',
-    line   => "    for service in [${swift}]:",
+    line   => "    for service in []:",
     match  => "(    for service in).*"
   }
 
   $controller_ip_addr = hiera('ha::vip')
 
   file_line { 'identity_dns':
-    notify => Service['openstack-sahara-all'], # only restarts if change
+    notify => Service['httpd', 'openstack-sahara-engine'], # only restarts if change
     path   => '/usr/lib/python2.7/site-packages/sahara/utils/cluster.py',
     line   => "    hosts = \"127.0.0.1 localhost\\n${controller_ip_addr} ${hostname}\\n\"",
     match  => '.*(localhost).*'
@@ -129,13 +124,6 @@ class quickstack::sahara (
     group  => 'root',
     mode   => '0440',
     source => 'puppet:///modules/quickstack/sahara-rootwrap.fix'
-  }
-
-  file_line { 'pig_note': # Might fail on first Puppet run
-    notify => Service['httpd'], # only restarts if change
-    path   => '/usr/lib/python2.7/site-packages/sahara_dashboard/content/data_processing/jobs/templates/job_templates/_create_job_help.html',
-    line   => '    <li>{% blocktrans %}Pig - <a href="https://github.com/jeremyfreudberg/sahara-image-elements/wiki/Running-Pig-jobs-on-Vanilla-MOC-Remix-clusters">See Note</a>{% endblocktrans %}</li>',
-    match  => '.*(Pig).*'
   }
 
 }

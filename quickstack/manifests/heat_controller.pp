@@ -146,13 +146,14 @@ class quickstack::heat_controller(
     }
   }
 
-#  file { '/usr/lib/python2.7/site-packages/heat/common/context.py':
-#    notify => Service['openstack-heat-api', 'openstack-heat-engine'], # only restarts if change
-#    ensure  => present,
-#    owner   => 'root',
-#    group   => 'root',
-#    mode    => '0644',
-#    source  => 'puppet:///modules/quickstack/heat_context.py',
-#  }
+
+  class { 'heat::keystone::domain':
+     auth_url          => "https://${controller_priv_host}:5000/v3",
+     keystone_admin    => 'admin',
+     keystone_password => $quickstack::params::admin_password,
+     keystone_tenant   => 'admin',
+     domain_password   => $heat_user_password,
+  }
+
 
 }
