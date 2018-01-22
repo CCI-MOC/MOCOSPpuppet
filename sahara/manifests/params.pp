@@ -9,7 +9,8 @@ class sahara::params {
   case $::osfamily {
     'RedHat': {
       $package_name = 'openstack-sahara'
-      $service_name = 'openstack-sahara-all'
+      $service_name = 'openstack-sahara-engine'
+      # Sahara API runs behind Apache now
     }
     'Debian': {
       $package_name = 'sahara'

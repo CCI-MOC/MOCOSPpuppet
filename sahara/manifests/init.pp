@@ -207,11 +207,20 @@ class sahara(
     sahara_config {
       'keystone_authtoken/auth_uri': value => $keystone_url;
       'keystone_authtoken/identity_uri': value => $identity_url;
+      'keystone_authtoken/auth_url': value => $identity_url;
       'keystone_authtoken/admin_user': value => $keystone_username;
+      'keystone_authtoken/username': value => $keystone_username;
       'keystone_authtoken/admin_tenant_name': value => $keystone_tenant;
+      'keystone_authtoken/project_name': value => $keystone_tenant;
       'keystone_authtoken/admin_password':
         value => $keystone_password,
         secret => true;
+      'keystone_authtoken/password':
+        value => $keystone_password,
+        secret => true;
+      'keystone_authtoken/auth_type': value => 'password';
+      'keystone_authtoken/user_domain_name': value => 'Default';
+      'keystone_authtoken/project_domain_name': value => 'Default';
     }
   }
 
@@ -252,6 +261,7 @@ class sahara(
     hasrestart => true,
     subscribe  => Exec['sahara-dbmanage'],
   }
+
 
   exec { 'sahara-dbmanage':
     command     => $::sahara::params::dbmanage_command,
