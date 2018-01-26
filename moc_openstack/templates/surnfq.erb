@@ -36,7 +36,7 @@ if [ $sumfile -ot $0 ]; then
 fi
 
 checksum=`cat $sumfile`
-runningsum=`iptables -L suricata -n| md5sum`
+runningsum=`iptables -L suricata -n| md5sum | cut -f 1 -d ' '`
 
 #echo $checksum
 #echo $runningsum
@@ -64,4 +64,4 @@ iptables -A suricata -s 192.168.0.0/16 -d 192.168.0.0/16 -j RETURN
 iptables -A suricata -m state --state related,established -j RETURN
 iptables -A suricata -m mark ! --mark 0x1/0x1 -j NFQUEUE
 
-echo `iptables -L suricata -n| md5sum` > $sumfile
+echo `iptables -L suricata -n| md5sum | cut -f 1 -d ' '` > $sumfile
