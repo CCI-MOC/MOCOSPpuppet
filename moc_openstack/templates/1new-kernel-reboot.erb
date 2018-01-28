@@ -22,7 +22,7 @@ if [ "$role" == "compute" ]; then
   . /root/keystonerc_admin
   nova service-disable $hst nova-compute > /dev/null
   nova host-evacuate-live $hst > /dev/null
-  nova list --all|cut -f 2 -d '|'|grep -v '+'|grep -vi id > /tmp/vms
+  nova list --all|grep Running|cut -f 2 -d '|'|grep -v '+'|grep -vi id > /tmp/vms
   for ((i=1;i<=$checkretries;i+=1))
   do
     sleep 120
