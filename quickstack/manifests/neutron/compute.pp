@@ -94,7 +94,7 @@ class quickstack::neutron::compute (
       $local_ip      = find_ip("$ovs_tunnel_network","$quanta_priv_iface","")
       $private_iface = $quanta_priv_iface
   }
-  elsif 'PowerEdge R730xd' in $::productname {
+  elsif 'PowerEdge R730' in $::productname {
       $local_ip      = find_ip("$ovs_tunnel_network","$r730xd_priv_iface","")
       $private_iface = $r730xd_priv_iface
   }
