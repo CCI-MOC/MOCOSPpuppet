@@ -201,7 +201,7 @@ class quickstack::neutron::controller (
   if $::productname == 'QSSC-S99' {
       $local_ip = find_ip("$ovs_tunnel_network","$quanta_priv_iface","")
   }
-  elsif 'PowerEdge R730xd' in $::productname {
+  elsif 'PowerEdge R730' in $::productname {
       $local_ip = find_ip("$ovs_tunnel_network","$r730xd_priv_iface","")
   }
   elsif 'System x3550 M5' in $::productname {
