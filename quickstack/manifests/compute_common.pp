@@ -158,7 +158,7 @@ class quickstack::compute_common (
     $priv_iface = $lenovo_priv_iface
     $ceph_iface = $lenovo_ceph_iface
   }
-  elsif 'PowerEdge R730xd' in $::productname {
+  elsif 'PowerEdge R730' in $::productname {
     $pub_iface  = $r730xd_pub_iface
     $priv_iface = $r730xd_priv_iface
     $ceph_iface = $r730xd_ceph_iface
