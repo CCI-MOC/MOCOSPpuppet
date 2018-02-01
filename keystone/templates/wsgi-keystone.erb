@@ -46,9 +46,6 @@ WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keys
     OIDCRedirectURI <%= scope.lookupvar('quickstack::params::controller_pub_url') -%>:5000/v3/auth/OS-FEDERATION/websso
     OIDCRedirectURI <%= scope.lookupvar('quickstack::params::controller_pub_url') -%>:5000/v3/OS-FEDERATION/identity_providers/moc/protocols/openid/auth
 
-    OIDCOAuthClientID <%= scope.lookupvar('quickstack::params::sso_uid') -%> 
-    OIDCOAuthClientSecret <%= scope.lookupvar('quickstack::params::sso_secret') -%> 
-    OIDCOAuthIntrospectionEndpoint <%= scope.lookupvar('quickstack::params::sso_url') -%>auth/realms/moc/protocol/openid-connect/token/introspect
     <LocationMatch /v3/OS-FEDERATION/identity_providers/.*?/protocols/openid/auth>
         AuthType openid-connect
         Require valid-user
@@ -58,11 +55,6 @@ WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keys
         AuthType openid-connect
         Require valid-user
     </Location>
-
-    <LocationMatch /v3/OS-FEDERATION/identity_providers/.*?/protocols/oauth20/auth>
-        AuthType oauth20
-        Require valid-user
-    </LocationMatch>
 
     <Location ~ "/v3/auth/OS-FEDERATION/identity_providers/moc/protocols/openid/websso">
         AuthType openid-connect
@@ -99,6 +91,19 @@ WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keys
             Allow from all
         </IfVersion>
     </Directory>
+
+    <% if scope.lookupvar('quickstack::params::sso_url') != :undef -%>
+    OIDCOAuthClientID <%= scope.lookupvar('quickstack::params::sso_uid') -%>
+    OIDCOAuthClientSecret <%= scope.lookupvar('quickstack::params::sso_secret') -%>
+    OIDCOAuthIntrospectionEndpoint <%= scope.lookupvar('quickstack::params::sso_url') -%>auth/realms/moc/protocol/openid-connect/token/introspect
+
+    OIDCClaimPrefix "OIDC-"
+
+    <LocationMatch /v3/OS-FEDERATION/identity_providers/.*?/protocols/openid/auth>
+        AuthType oauth20
+        Require valid-user
+    </LocationMatch>
+    <% end -%>
 </VirtualHost>
 
 Alias /identity /usr/bin/keystone-wsgi-public
