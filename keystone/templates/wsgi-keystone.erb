@@ -54,10 +54,15 @@ WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keys
         Require valid-user
     </LocationMatch>
 
-#    <Location ~ "/v3/auth/OS-FEDERATION/websso">
-#        AuthType openid-connect
-#        Require valid-user
-#    </Location>
+    <Location ~ "/v3/auth/OS-FEDERATION/websso">
+        AuthType openid-connect
+        Require valid-user
+    </Location>
+
+    <LocationMatch /v3/OS-FEDERATION/identity_providers/.*?/protocols/oauth20/auth>
+        AuthType oauth20
+        Require valid-user
+    </LocationMatch>
 
     <Location ~ "/v3/auth/OS-FEDERATION/identity_providers/moc/protocols/openid/websso">
         AuthType openid-connect
