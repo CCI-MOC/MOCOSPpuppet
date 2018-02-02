@@ -93,9 +93,13 @@ WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keys
     </Directory>
 
     <% if scope.lookupvar('quickstack::params::sso_url') != :undef -%>
+    
     OIDCOAuthClientID <%= scope.lookupvar('quickstack::params::sso_uid') -%>
+    
     OIDCOAuthClientSecret <%= scope.lookupvar('quickstack::params::sso_secret') -%>
+    
     OIDCOAuthIntrospectionEndpoint <%= scope.lookupvar('quickstack::params::sso_url') -%>auth/realms/moc/protocol/openid-connect/token/introspect
+    
 
     OIDCClaimPrefix "OIDC-"
 
