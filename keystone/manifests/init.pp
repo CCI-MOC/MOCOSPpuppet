@@ -520,10 +520,15 @@ class keystone(
     }
   }
   if $quickstack::params::sso_url {
+    $urlsplit = split ($quickstack::params::controller_pub_url, '[/.]')
+    $envname = $urlsplit[2]
+    exec {'clean_trdbs':
+      command => "/usr/bin/sed -i '/trusted_dashboard=/d' /etc/keystone/keystone.conf",
+    } ->
     keystone_config {
       'auth/methods'                 : value => 'password,token,openid';
       'openid/remote_id_attribute'   : value => 'HTTP_OIDC_ISS';
-      'federation/trusted_dashboard' : value => "$quickstack::params::controller_pub_url/dashboard/auth/websso/";
+      'federation/trusted_dashboard' : value => "$quickstack::params::controller_pub_url/dashboard/auth/websso/\ntrusted_dashboard=https://massopen.cloud/$envname/signup/invitations/accept";
     }
   } else {
     keystone_config {
