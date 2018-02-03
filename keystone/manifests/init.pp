@@ -523,7 +523,7 @@ class keystone(
     $urlsplit = split ($quickstack::params::controller_pub_url, '[/.]')
     $envname = $urlsplit[2]
     exec {'clean_trdbs':
-      command => "/usr/bin/sed -i '/trusted_dashboard=/d' /etc/keystone/keystone.conf",
+      command => "/usr/bin/sed -i '/^trusted_dashboard=/d' /etc/keystone/keystone.conf",
     } ->
     keystone_config {
       'auth/methods'                 : value => 'password,token,openid';
