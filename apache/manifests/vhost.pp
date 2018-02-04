@@ -80,7 +80,7 @@ define apache::vhost(
   $redirectmatch_regexp        = undef,
   $redirectmatch_dest          = undef,
   $rack_base_uris              = undef,
-  $headers                     = undef,
+  $headers                     = ['always set Strict-Transport-Security "max-age=63072000; includeSubdomains;"'],
   $request_headers             = undef,
   $rewrites                    = undef,
   $rewrite_base                = undef,

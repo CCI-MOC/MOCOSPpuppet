@@ -3,7 +3,7 @@ class apache::mod::ssl (
   $ssl_cryptodevice        = 'builtin',
   $ssl_options             = [ 'StdEnvVars' ],
   $ssl_openssl_conf_cmd    = undef,
-  $ssl_cipher              = 'HIGH:MEDIUM:!aNULL:!MD5:!RC4',
+  $ssl_cipher              = '"EECDH+ECDSA+AESGCM EECDH+aRSA+AESGCM EECDH+ECDSA+SHA384 EECDH+ECDSA+SHA256 EECDH+aRSA+SHA384 EECDH+aRSA+SHA256 EECDH+aRSA+RC4 EECDH EDH+aRSA RC4 !aNULL !eNULL !LOW !3DES !MD5 !EXP !PSK !SRP !DSS !RC4"',
   $ssl_honorcipherorder    = 'On',
   $ssl_protocol            = [ 'all', '-SSLv2', '-SSLv3' ],
   $ssl_pass_phrase_dialog  = 'builtin',
