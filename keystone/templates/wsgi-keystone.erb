@@ -116,3 +116,17 @@ Alias /identity_admin /usr/bin/keystone-wsgi-admin
     WSGIPassAuthorization On
 </Location>
 
+Alias "/dashboard/auth/logout/" "/var/www/html/logout.html"
+  <Location "/dashboard/auth/logout/">
+      ## Prevent caching of the page
+      Header set Cache-Control "max-age=0, no-cache, no-store, must-revalidate"
+      Header set Pragma "no-cache"
+      Header set Expires "25 Dec 1991 12:00:00 UTC"
+
+      ## Unset horizon session cookies
+      Header add Set-Cookie "sessionid=; path=/; expires=25 Dec 1991 12:00:00 UTC"
+      Header add Set-Cookie "login_domain=; path=/; expires=25 Dec 1991 12:00:00 UTC"
+      Header add Set-Cookie "login_region=; path=/; expires=25 Dec 1991 12:00:00 UTC"
+  </Location>
+
+

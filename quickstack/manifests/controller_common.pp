@@ -1029,6 +1029,7 @@ if hiera('moc::dobackups') == 'true' {
   }
 
   class {'moc_openstack::suricata': }
+  class {'moc_openstack::ssologout': }
 
 
   # Create entries in /etc/hosts

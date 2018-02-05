@@ -523,18 +523,19 @@ class keystone(
     $urlsplit = split ($quickstack::params::controller_pub_url, '[/.]')
     $envname = $urlsplit[2]
     exec {'clean_trdbs':
-      command => "/usr/bin/sed -i '/^trusted_dashboard=/d' /etc/keystone/keystone.conf",
+      command => "/usr/bin/sed -i '/^trusted_dashboard/d' /etc/keystone/keystone.conf",
     } ->
     keystone_config {
-      'auth/methods'                 : value => 'password,token,openid';
-      'openid/remote_id_attribute'   : value => 'HTTP_OIDC_ISS';
-      'federation/trusted_dashboard' : value => "$quickstack::params::controller_pub_url/dashboard/auth/websso/\ntrusted_dashboard=https://massopen.cloud/$envname/signup/invitations/accept";
+      'auth/methods'                   : value => 'password,token,openid';
+      'openid/remote_id_attribute'     : value => 'HTTP_OIDC_ISS';
+      'federation/trusted_dashboard '  : value => "$quickstack::params::controller_pub_url/dashboard/auth/websso/";
+      'federation/trusted_dashboard  ' : value => "https://massopen.cloud/$envname/signup/invitations/accept";
     }
   } else {
     keystone_config {
-      'auth/methods'                 : ensure => absent;
-      'openid/remote_id_attribute'   : ensure => absent;
-      'federation/trusted_dashboard' : ensure => absent;
+      'auth/methods'                   : ensure => absent;
+      'openid/remote_id_attribute'     : ensure => absent;
+      'federation/trusted_dashboard'   : ensure => absent;
     }
   }
 
