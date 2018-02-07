@@ -58,6 +58,7 @@ class quickstack::sahara (
     'DEFAULT/proxy_command':              value => "\'ip netns exec qdhcp-{network_id} nc {host} {port}\'";
     'DEFAULT/use_rootwrap':               value => true;
     'DEFAULT/proxy_command_use_internal_ip': value => true;
+    'cinder/api_version': value => 2;
   }
   
   if str2bool_i($sahara_use_ssl) { 
