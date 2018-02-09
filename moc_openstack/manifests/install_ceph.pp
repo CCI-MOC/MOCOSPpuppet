@@ -39,8 +39,8 @@ class moc_openstack::install_ceph(
     } ->
     exec{"Creating ceph vlan interface":
      require => File["/tmp/gen_ceph_intf_file.sh"],
-     command => "/bin/bash /tmp/gen_ceph_intf_file.sh;ifup ${ceph_iface}.${ceph_vlan};",
-     onlyif => "/usr/bin/test ! -f /etc/sysconfig/network-scripts/ifcfg-${ceph_iface}.${ceph_vlan}",
+     command => "/bin/bash /tmp/gen_ceph_intf_file.sh;ifup ${ceph_iface}.${ceph_vlan};/usr/bin/touch /tmp/cephdone",
+     onlyif => "/usr/bin/test ! -f /tmp/cephdone",
     }
 } else {
     fail("The install_missing_package workaround is only supported on RedHat systems!")
