@@ -22,6 +22,12 @@ class moc_openstack::firewall (
       source   => $private_net,
       action   => 'accept',
     }
+    firewall { '002 allow internal mgmt subnet':
+      chain    => 'INPUT',
+      proto    => 'all',
+      source   => $quickstack::params::surnet2,
+      action   => 'accept',
+    }
     firewall { '010 accept all icmp':
       proto   => 'icmp',
       action  => 'accept',
