@@ -52,6 +52,7 @@ iptables -A suricata -s $net5 -j ACCEPT
 iptables -A suricata -s $net6 -j ACCEPT
 iptables -A suricata -s $net7 -j ACCEPT
 iptables -A suricata -s cf.massopen.cloud -j ACCEPT
+iptables -A suricata -s e1-grafana.massopen.cloud -j ACCEPT
 iptables -A suricata -s 10.0.0.0/8 -d 10.0.0.0/8 -j RETURN
 iptables -A suricata -s 10.0.0.0/8 -d 172.16.0.0/12 -j RETURN
 iptables -A suricata -s 10.0.0.0/8 -d 192.168.0.0/16 -j RETURN
