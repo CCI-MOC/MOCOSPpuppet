@@ -3,7 +3,32 @@ Listen 35357
 WSGIDaemonProcess keystone-public processes=10 threads=1 user=keystone group=keystone display-name=%{GROUP}
 WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keystone display-name=%{GROUP}
 
+<% if scope.lookupvar('quickstack::params::mixmatch') != :undef -%>
+LoadModule mod_shib /usr/lib64/shibboleth/mod_shib_24.so
+<Location /Shibboleth.sso>
+    SetHandler shib
+</Location>
+<% end -%>
+
 <VirtualHost *:5000>
+
+
+<% if scope.lookupvar('quickstack::params::mixmatch') != :undef -%>
+
+<Location /v3/OS-FEDERATION/identity_providers/<%= scope.lookupvar('quickstack::params::idp1') -%>/protocols/saml2/auth>
+    ShibRequestSetting requireSession 1
+    AuthType shibboleth
+    ShibExportAssertion Off
+    Require valid-user
+
+    <IfVersion < 2.4>
+        ShibRequireSession On
+        ShibRequireAll On
+   </IfVersion>
+</Location>
+<% end -%>
+
+
     WSGIProcessGroup keystone-public
     WSGIScriptAlias / /usr/bin/keystone-wsgi-public
     WSGIApplicationGroup %{GLOBAL}
@@ -44,7 +69,6 @@ WSGIDaemonProcess keystone-admin processes=10 threads=1 user=keystone group=keys
     OIDCCryptoPassphrase openstack
     OIDCRedirectURI <%= scope.lookupvar('quickstack::params::controller_pub_url') -%>:5000/v3/auth/OS-FEDERATION/identity_providers/moc/protocols/openid/websso
     OIDCRedirectURI <%= scope.lookupvar('quickstack::params::controller_pub_url') -%>:5000/v3/auth/OS-FEDERATION/websso
-    
     OIDCOAuthClientID <%= scope.lookupvar('quickstack::params::sso_uid') -%> 
     OIDCOAuthClientSecret <%= scope.lookupvar('quickstack::params::sso_secret') -%> 
     OIDCOAuthIntrospectionEndpoint <%= scope.lookupvar('quickstack::params::sso_url') -%>auth/realms/moc/protocol/openid-connect/token/introspect 
@@ -116,6 +140,7 @@ Alias /identity_admin /usr/bin/keystone-wsgi-admin
     WSGIPassAuthorization On
 </Location>
 
+<% if scope.lookupvar('quickstack::params::sso_url') != :undef -%>
 Alias "/dashboard/auth/logout/" "/var/www/html/logout.html"
   <Location "/dashboard/auth/logout/">
       ## Prevent caching of the page
@@ -128,5 +153,6 @@ Alias "/dashboard/auth/logout/" "/var/www/html/logout.html"
       Header add Set-Cookie "login_domain=; path=/; expires=25 Dec 1991 12:00:00 UTC"
       Header add Set-Cookie "login_region=; path=/; expires=25 Dec 1991 12:00:00 UTC"
   </Location>
+<% end -%>
 
 

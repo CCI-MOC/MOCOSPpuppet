@@ -500,47 +500,47 @@ if hiera('moc::usesensu') == 'true' {
     servers => $ntp_local_servers,
   }
 
-  class { 'filebeat':
-    outputs => {
-      'logstash' => {
-        'hosts'       => [$elasticsearch_host],
-        'loadbalance' => true
-      }
-    },
-    logging => {
-      'level'    => "info"
-    }
-  }
-
-  filebeat::prospector {'syslog':
-    paths    => [
-      '/var/log/*.log',
-      '/var/log/secure',
-      '/var/log/messages',
-    ],
-    doc_type => 'syslog',
-  }
-
-  filebeat::prospector {'neutron':
-    paths    => [
-      '/var/log/neutron/*.log',
-    ],
-    doc_type => 'neutron',
-  }
-
-  filebeat::prospector {'nova':
-    paths    => [
-      '/var/log/nova/*.log',
-    ],
-    doc_type => 'nova',
-  }
-
-  filebeat::prospector {'ceilometer':
-    paths    => [
-      '/var/log/ceilometer/*.log',
-    ],
-    doc_type => 'ceilometer',
-  }
+#  class { 'filebeat':
+#    outputs => {
+#      'logstash' => {
+#        'hosts'       => [$elasticsearch_host],
+#        'loadbalance' => true
+#      }
+#    },
+#    logging => {
+#      'level'    => "info"
+#    }
+#  }
+#
+#  filebeat::prospector {'syslog':
+#    paths    => [
+#      '/var/log/*.log',
+#      '/var/log/secure',
+#      '/var/log/messages',
+#    ],
+#    doc_type => 'syslog',
+#  }
+#
+#  filebeat::prospector {'neutron':
+#    paths    => [
+#      '/var/log/neutron/*.log',
+#    ],
+#    doc_type => 'neutron',
+#  }
+#
+#  filebeat::prospector {'nova':
+#    paths    => [
+#      '/var/log/nova/*.log',
+#    ],
+#    doc_type => 'nova',
+#  }
+#
+#  filebeat::prospector {'ceilometer':
+#    paths    => [
+#      '/var/log/ceilometer/*.log',
+#    ],
+#    doc_type => 'ceilometer',
+#  }
 
   # Installs scripts for automated backups  
   package { "rsync":

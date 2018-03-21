@@ -459,7 +459,8 @@ class quickstack::params (
   $sso_uid = undef,
   $sso_secret = undef,
   
-  
+  $mixmatch = undef,
+  $idp1 = undef,
   $surnet2 = undef,
 ) {
 }
