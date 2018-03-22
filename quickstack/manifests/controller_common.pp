@@ -222,9 +222,11 @@ class quickstack::controller_common (
   $elasticsearch_host            = $quickstack::params::elasticsearch_host,
   $enable_ceilometer             = $quickstack::params::enable_ceilometer,
   $sahara_db_password            = $quickstack::params::sahara_db_password,
-  $sso_url                       = $quickstack::params::sso_url,
+  $mixmatch                      = $quickstack::params::mixmatch,
   $sso_uid                       = $quickstack::params::sso_uid,
   $sso_secret                    = $quickstack::params::sso_secret,
+  $sso_url                       = $quickstack::params::sso_url,
+  $idp1                          = $quickstack::params::idp1,
 ) inherits quickstack::params {
 
   if str2bool_i("$use_ssl_endpoints") {
@@ -731,7 +733,40 @@ class quickstack::controller_common (
     amqp_password               => $amqp_password,
     verbose                     => $verbose,
   }
-
+  if $mixmatch {
+    package {'shibboleth':
+    ensure => latest,
+    }
+    service { 'shibd':
+      ensure  => 'running',
+      enable  => 'true',
+      require => Package['shibboleth'],
+    }
+    file { '/etc/shibboleth/shibboleth2.xml':
+      ensure  => file,
+      path    => "/etc/shibboleth/shibboleth2.xml",
+      content => template('keystone/shibboleth2.xml.erb'),
+      notify  => service['shibd'],
+      require => Package['shibboleth'],
+    }
+    file { '/etc/shibboleth/attribute-map.xml':
+      ensure  => file,
+      path    => "/etc/shibboleth/attribute-map.xml",
+      source => 'puppet:///modules/keystone/attribute-map.xml',
+      notify  => service['shibd'],
+      require => Package['shibboleth'],
+    }
+    file { '/etc/shibboleth/metadata.xml':
+      ensure  => file,
+      path    => "/etc/shibboleth/metadata.xml",
+      source => 'puppet:///modules/keystone/metadata.xml',
+      notify  => service['shibd'],
+      require => Package['shibboleth'],
+    }
+    package {'xmlsec1':
+      ensure => latest,
+    }
+  }
   # horizon packages
   package {'python-memcached':
     ensure => installed,
@@ -945,82 +980,82 @@ if hiera('moc::dobackups') == 'true' {
 
 
 
-  class { 'filebeat':
-    outputs => {
-      'logstash' => {
-        'hosts'       =>  [$elasticsearch_host],
-        'loadbalance' => true
-      }
-    },
-    logging => {
-      'level'    => "info"
-    }
-  }
-
-  filebeat::prospector {'syslog':
-    paths    => [
-      '/var/log/*.log',
-      '/var/log/secure',
-      '/var/log/messages',
-    ],
-    doc_type => 'syslog',
-  }
-
-  filebeat::prospector {'neutron':
-    paths    => [
-      '/var/log/neutron/*.log',
-    ],
-    doc_type => 'neutron',
-  }
-
-  filebeat::prospector {'horizon':
-    paths    => [
-      '/var/log/horizon/*.log',
-    ],
-    doc_type => 'horizon',
-  }
-
-  filebeat::prospector {'nova':
-    paths    => [
-      '/var/log/nova/*.log',
-    ],
-    doc_type => 'nova',
-  }
-
-  filebeat::prospector {'glance':
-    paths    => [
-      '/var/log/glance/*.log',
-    ],
-    doc_type => 'glance',
-  }
-
-  filebeat::prospector {'cinder':
-    paths    => [
-      '/var/log/cinder/*.log',
-    ],
-    doc_type => 'cinder',
-  }
-
-  filebeat::prospector {'keystone':
-    paths    => [
-      '/var/log/keystone/*.log',
-    ],
-    doc_type => 'keystone',
-  }
-
-  filebeat::prospector {'ceilometer':
-    paths    => [
-      '/var/log/ceilometer/*.log',
-    ],
-    doc_type => 'ceilometer',
-  }
-
-  filebeat::prospector {'heat':
-    paths    => [
-      '/var/log/heat/*.log',
-    ],
-    doc_type => 'heat',
-  }
+#  class { 'filebeat':
+#    outputs => {
+#      'logstash' => {
+#        'hosts'       =>  [$elasticsearch_host],
+#        'loadbalance' => true
+#      }
+#    },
+#    logging => {
+#      'level'    => "info"
+#    }
+#  }
+#
+#  filebeat::prospector {'syslog':
+#    paths    => [
+#      '/var/log/*.log',
+#      '/var/log/secure',
+#      '/var/log/messages',
+#    ],
+#    doc_type => 'syslog',
+#  }
+#
+#  filebeat::prospector {'neutron':
+#    paths    => [
+#      '/var/log/neutron/*.log',
+#    ],
+#    doc_type => 'neutron',
+#  }
+#
+#  filebeat::prospector {'horizon':
+#    paths    => [
+#      '/var/log/horizon/*.log',
+#    ],
+#    doc_type => 'horizon',
+#  }
+#
+#  filebeat::prospector {'nova':
+#    paths    => [
+#      '/var/log/nova/*.log',
+#    ],
+#    doc_type => 'nova',
+#  }
+#
+#  filebeat::prospector {'glance':
+#    paths    => [
+#      '/var/log/glance/*.log',
+#    ],
+#    doc_type => 'glance',
+#  }
+#
+#  filebeat::prospector {'cinder':
+#    paths    => [
+#      '/var/log/cinder/*.log',
+#    ],
+#    doc_type => 'cinder',
+#  }
+#
+#  filebeat::prospector {'keystone':
+#    paths    => [
+#      '/var/log/keystone/*.log',
+#    ],
+#    doc_type => 'keystone',
+#  }
+#
+#  filebeat::prospector {'ceilometer':
+#    paths    => [
+#      '/var/log/ceilometer/*.log',
+#    ],
+#    doc_type => 'ceilometer',
+#  }
+#
+#  filebeat::prospector {'heat':
+#    paths    => [
+#      '/var/log/heat/*.log',
+#    ],
+#    doc_type => 'heat',
+#  }
 
 
   class {'moc_openstack::cronjob':

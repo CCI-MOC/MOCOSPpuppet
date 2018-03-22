@@ -422,9 +422,9 @@ class keystone(
   $ssl_ca_key             = '/etc/keystone/ssl/private/cakey.pem',
   $ssl_cert_subject       = '/C=US/ST=Unset/L=Unset/O=Unset/CN=localhost',
   $cache_dir              = '/var/cache/keystone',
-  $memcache_servers       = false,
+  $memcache_servers       = ['localhost:11211'],
   $manage_service         = false,
-  $cache_backend          = 'keystone.common.cache.noop',
+  $cache_backend          = 'oslo_cache.memcache_pool',
   $cache_backend_argument = undef,
   $debug_cache_backend    = false,
   $token_caching          = true,
@@ -502,7 +502,7 @@ class keystone(
 
   File['/etc/keystone/keystone.conf'] -> Keystone_config<||> ~> Service[$service_name]
   Keystone_config<||> ~> Exec<| title == 'keystone-manage db_sync'|>
-  Keystone_config<||> ~> Exec<| title == 'keystone-manage pki_setup'|>
+#  Keystone_config<||> ~> Exec<| title == 'keystone-manage pki_setup'|>
   Keystone_config<||> ~> Exec<| title == 'keystone-manage fernet_setup'|>
 
   include ::keystone::params
@@ -526,14 +526,13 @@ class keystone(
       command => "/usr/bin/sed -i '/^trusted_dashboard/d' /etc/keystone/keystone.conf",
     } ->
     keystone_config {
-      'auth/methods'                   : value => 'password,token,openid';
       'openid/remote_id_attribute'     : value => 'HTTP_OIDC_ISS';
       'federation/trusted_dashboard '  : value => "$quickstack::params::controller_pub_url/dashboard/auth/websso/";
       'federation/trusted_dashboard  ' : value => "https://massopen.cloud/$envname/signup/invitations/accept";
     }
   } else {
     keystone_config {
-      'auth/methods'                   : ensure => absent;
+#      'auth/methods'                   : ensure => absent;
       'openid/remote_id_attribute'     : ensure => absent;
       'federation/trusted_dashboard'   : ensure => absent;
     }
@@ -571,6 +570,7 @@ class keystone(
   }
 
   keystone_config {
+    'auth/methods':             value => 'password,token,openid,saml2';
     'DEFAULT/admin_token':      value => $admin_token, secret => true;
     'DEFAULT/verbose':          value => $verbose;
     'DEFAULT/debug':            value => $debug;
@@ -629,7 +629,16 @@ class keystone(
       'revoke/driver':    ensure => absent;
     }
   }
-
+  if $quickstack::params::mixmatch {
+    keystone_config {
+      'saml/idp_entity_id':        value  => "$quickstack::params::controller_priv_url/identity/v3/OS-FEDERATION/saml2/idp";
+      'saml/idp_sso_endpoint':     value  => "$quickstack::params::controller_priv_url/v3/OS-FEDERATION/saml2/sso";
+      'saml/certfile':             value  => $ssl_certfile;
+      'saml/keyfile':              value  => $ssl_keyfile;
+      'saml/idp_metadata_path':    value  => "/etc/keystone/saml2_idp_metadata.xml";
+      'saml2/remote_id_attribute': value  => "Shib-Identity-Provider";
+    }
+  }
   # ssl config
   if ($enable_ssl) {
     keystone_config {
@@ -664,9 +673,9 @@ class keystone(
     keystone_config {
       'cache/enabled':              value => true;
       'cache/backend':              value => $cache_backend;
-      'cache/debug_cache_backend':  value => $debug_cache_backend;
-      'token/caching':              value => $token_caching;
-      'memcache/servers':           value => join($memcache_servers, ',');
+      'cache/memcache_servers':     value => join($memcache_servers, ',');
+#      'cache/debug_cache_backend':  value => $debug_cache_backend;
+#      'token/caching':              value => $token_caching;
     }
     if $cache_backend_argument {
       validate_array($cache_backend_argument)
