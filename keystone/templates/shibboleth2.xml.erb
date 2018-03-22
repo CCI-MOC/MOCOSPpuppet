@@ -76,11 +76,15 @@
         </MetadataProvider>
         -->
 
-        <!-- Example of locally maintained metadata. -->
         <!--
-        <MetadataProvider type="XML" file="partner-metadata.xml"/>
+        Keystone to Keystone Federation data
+
+        Managed by Puppet
+
+        For each new OpenStack in the federation, insert the metadata in the xml file.
         -->
-        <MetadataProvider type="XML" uri="https://myidp.example.com:5000/v3/OS-FEDERATION/saml2/metadata"/>
+        <MetadataProvider type="XML" file="metadata.xml"/>
+
 
         <!-- Map to extract attributes from SAML assertions. -->
         <AttributeExtractor type="XML" validate="true" reloadChanges="false" path="attribute-map.xml"/>

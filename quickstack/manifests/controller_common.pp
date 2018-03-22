@@ -756,6 +756,13 @@ class quickstack::controller_common (
       notify  => service['shibd'],
       require => Package['shibboleth'],
     }
+    file { '/etc/shibboleth/metadata.xml':
+      ensure  => file,
+      path    => "/etc/shibboleth/metadata.xml",
+      source => 'puppet:///modules/keystone/metadata.xml',
+      notify  => service['shibd'],
+      require => Package['shibboleth'],
+    }
     package {'xmlsec1':
       ensure => latest,
     }

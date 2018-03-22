@@ -636,7 +636,7 @@ class keystone(
       'saml/certfile':             value  => $ssl_certfile;
       'saml/keyfile':              value  => $ssl_keyfile;
       'saml/idp_metadata_path':    value  => "/etc/keystone/saml2_idp_metadata.xml";
-      'saml2/remote_id_attribute': value  => "/etc/keystone/Shib-Identity-Provider";
+      'saml2/remote_id_attribute': value  => "Shib-Identity-Provider";
     }
   }
   # ssl config
