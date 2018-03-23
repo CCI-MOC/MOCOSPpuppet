@@ -766,6 +766,9 @@ class quickstack::controller_common (
     package {'xmlsec1':
       ensure => latest,
     }
+    package {'xmlsec1-openssl':
+      ensure => latest,
+    }
   }
   # horizon packages
   package {'python-memcached':
