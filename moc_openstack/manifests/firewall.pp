@@ -32,11 +32,11 @@ class moc_openstack::firewall (
       proto   => 'icmp',
       action  => 'accept',
     }
-    firewall { '011 allow ssh':
-      proto  => 'tcp',
-      dport  => '22',
-      action => 'accept',
-    }
+#    firewall { '011 allow ssh':
+#      proto  => 'tcp',
+#      dport  => '22',
+#      action => 'accept',
+#    }
     firewall { '099 accept related established rules':
       proto   => 'all',
       state => ['RELATED', 'ESTABLISHED'],
