@@ -12,8 +12,10 @@ alerts=<%= scope.function_hiera(['moc::alertsemail']) %>
 if [ "$role" == "control" ]; then
   if [ "$clusterdeployment" == "true" ];then
     pcs status cluster|grep Offline > /dev/null && echo 'Cluster node(s) are offline' | mail -s "Controller $hst" $alerts && exit 1
+    rm -rf /etc/openvswitch/conf.db
     iptables-save > /dev/null && service mariadb stop && sync && reboot -f
   else
+    rm -rf /etc/openvswitch/conf.db
     iptables-save > /dev/null && service mariadb stop && sync && reboot -f
   fi
 fi
@@ -33,6 +35,7 @@ if [ "$role" == "compute" ]; then
     done
     if [ "$busy" == "false" ]; then
       nova service-enable $hst nova-compute > /dev/null
+      rm -rf /etc/openvswitch/conf.db
       reboot
     fi
   done
